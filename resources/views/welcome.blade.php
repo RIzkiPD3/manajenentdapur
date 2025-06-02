@@ -55,15 +55,7 @@
                         Masuk ke Dashboard
                     </a>
 
-                    <!-- Register Link (Optional) -->
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600">
-                            Belum punya akun?
-                            <a href="{{ url('/register') }}" class="text-indigo-600 hover:text-indigo-700 font-medium hover:underline">
-                                Daftar sekarang
-                            </a>
-                        </p>
-                    </div>
+
                 </div>
 
                 <!-- Footer Info -->

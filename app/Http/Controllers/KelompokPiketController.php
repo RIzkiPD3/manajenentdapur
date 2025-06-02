@@ -16,13 +16,19 @@ class KelompokPiketController extends Controller
     {
         $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
-            'anggota' => 'required|array|min:1',
-            'anggota.*' => 'string'
+            'anggota' => 'required|string' // karena input dari form string
         ]);
 
-        $kelompok = KelompokPiket::create($validated);
-        return response()->json($kelompok, 201);
+        $anggotaArray = array_map('trim', explode(',', $validated['anggota']));
+
+        $kelompok = KelompokPiket::create([
+            'nama_kelompok' => $validated['nama_kelompok'],
+            'anggota' => $anggotaArray
+        ]);
+
+        return redirect()->route('kelompok.index');
     }
+
 
     public function edit(KelompokPiket $kelompok)
     {
@@ -33,13 +39,19 @@ class KelompokPiketController extends Controller
     {
         $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
-            'anggota' => 'required|array|min:1',
-            'anggota.*' => 'string'
+            'anggota' => 'required|string'
         ]);
 
-        $kelompok->update($validated);
-        return response()->json($kelompok);
+        $anggotaArray = array_map('trim', explode(',', $validated['anggota']));
+
+        $kelompok->update([
+            'nama_kelompok' => $validated['nama_kelompok'],
+            'anggota' => $anggotaArray
+        ]);
+
+        return redirect()->route('kelompok.index');
     }
+
 
     public function destroy(KelompokPiket $kelompok)
     {

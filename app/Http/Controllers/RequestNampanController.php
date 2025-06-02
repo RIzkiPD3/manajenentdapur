@@ -9,18 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class RequestNampanController extends Controller
 {
-    // Untuk angkatan - kirim request
+    /**
+     * Halaman form pengajuan request nampan oleh angkatan.
+     */
     public function create()
     {
         $today = now()->toDateString();
-        $jadwal = JadwalPiket::where('tanggal', $today)->first();
+        $kelompok = JadwalPiket::where('tanggal', $today)->first()?->kelompok;
 
-        return response()->json([
-            'kelompok_piket_id' => $jadwal?->kelompok_piket_id,
-            'tanggal' => $today,
-        ]);
+        return view('angkatan.request-nampan', compact('kelompok'));
     }
 
+    /**
+     * Simpan request nampan yang dikirim oleh angkatan.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -29,20 +31,24 @@ class RequestNampanController extends Controller
             'tanggal' => 'required|date',
         ]);
 
-        $requestNampan = RequestNampan::create([
+        RequestNampan::create([
             'user_id' => Auth::id(),
             'kelompok_piket_id' => $request->kelompok_piket_id,
             'jumlah_nampan' => $request->jumlah_nampan,
             'tanggal' => $request->tanggal,
         ]);
 
-        return response()->json($requestNampan, 201);
+        return redirect()->back()->with('success', 'Request nampan berhasil dikirim.');
     }
 
-    // Untuk petugas - lihat semua request hari ini
+    /**
+     * Petugas melihat semua request nampan yang masuk hari ini.
+     */
     public function index()
     {
         $today = now()->toDateString();
-        return RequestNampan::with('user')->where('tanggal', $today)->get();
+        $requests = RequestNampan::with('user')->where('tanggal', $today)->get();
+
+        return view('petugas.request-nampan', compact('requests'));
     }
 }

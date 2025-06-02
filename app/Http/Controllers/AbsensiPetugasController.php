@@ -18,10 +18,10 @@ class AbsensiPetugasController extends Controller
                     ->where('tanggal', $today)
                     ->first(); // hanya 1 kelompok piket per hari
 
-        return response()->json([
-            'sesi' => $sesiHariIni,
-            'kelompok' => $jadwal?->kelompok,
-        ]);
+         return view('petugas.absensi.index', [
+            'sesi' => $sesiHariIni,   // -> SesiAbsensi::where('tanggal', today())->get()
+            'kelompok' => $jadwal?->kelompok // -> JadwalPiket::where('tanggal', today())->first()->kelompok
+                    ]);
     }
 
     // Simpan absensi petugas untuk sesi tertentu

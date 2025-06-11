@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_sesi');    // Pagi / Siang / Malam
             $table->time('waktu_mulai');
-            $table->date('tanggal');
+            $table->time('waktu_selesai');
             $table->timestamps();
         });
     }

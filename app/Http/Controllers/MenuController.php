@@ -9,41 +9,50 @@ class MenuController extends Controller
 {
     public function index()
     {
-        return Menu::latest()->get(); // untuk debugging JSON
+        $menus = Menu::latest()->get();
+        return view('admin.menus.index', compact('menus'));
+    }
+
+    public function create()
+    {
+        return view('admin.menus.create');
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
+        $request->validate([
             'nama_menu' => 'required|string|max:255',
-            'resep' => 'required|string'
+            'resep' => 'required|string',
         ]);
 
-        $menu = Menu::create($validated);
-        return response()->json($menu, 201);
+        Menu::create($request->only('nama_menu', 'resep', 'tanggal'));
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil ditambahkan.');
     }
+        public function show(Menu $menu)
+        {
+            return view('admin.menus.show', compact('menu'));
+        }
 
     public function edit(Menu $menu)
     {
-        return response()->json($menu);
+        return view('admin.menus.edit', compact('menu'));
     }
 
     public function update(Request $request, Menu $menu)
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
+        $request->validate([
             'nama_menu' => 'required|string|max:255',
-            'resep' => 'required|string'
+            'resep' => 'required|string',
         ]);
 
-        $menu->update($validated);
-        return response()->json($menu);
+        $menu->update($request->only('nama_menu', 'resep'));
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
 
     public function destroy(Menu $menu)
     {
         $menu->delete();
-        return response()->json(['message' => 'Menu deleted']);
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil dihapus.');
     }
+
 }

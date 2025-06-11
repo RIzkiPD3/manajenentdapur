@@ -10,39 +10,54 @@ class JadwalPiketController extends Controller
 {
     public function index()
     {
-        return JadwalPiket::with('kelompok')->latest()->get();
+        $jadwal = JadwalPiket::with('kelompok')->latest()->get();
+        return view('admin.jadwal.index', compact('jadwal'));
+    }
+
+    public function create()
+    {
+        $kelompok = KelompokPiket::all();
+        return view('admin.jadwal.create', compact('kelompok'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
+            'hari' => 'required|enum:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
             'kelompok_piket_id' => 'required|exists:kelompok_pikets,id',
-            'tanggal' => 'required|date',
         ]);
 
-        $jadwal = JadwalPiket::create($validated);
-        return response()->json($jadwal, 201);
+        JadwalPiket::create($request->only('hari', 'kelompok_piket_id'));
+        return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
     public function edit(JadwalPiket $jadwal)
     {
-        return response()->json($jadwal->load('kelompok'));
+        $kelompok = KelompokPiket::all();
+        return view('admin.jadwal.edit', compact('jadwal', 'kelompok'));
     }
 
     public function update(Request $request, JadwalPiket $jadwal)
     {
-        $validated = $request->validate([
-            'kelompok_piket_id' => 'required|exists:kelompok_pikets,id',
+        $request->validate([
             'tanggal' => 'required|date',
+            'kelompok_piket_id' => 'required|exists:kelompok_pikets,id',
         ]);
 
-        $jadwal->update($validated);
-        return response()->json($jadwal);
+        $jadwal->update($request->only('tanggal', 'kelompok_piket_id'));
+        return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
     }
 
     public function destroy(JadwalPiket $jadwal)
     {
         $jadwal->delete();
-        return response()->json(['message' => 'Jadwal piket dihapus']);
+        return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dihapus.');
     }
+
+    public function jadwalPetugas()
+    {
+        $jadwal = JadwalPiket::with('kelompok', 'menu')->latest()->get();
+        return view('petugas.jadwal.index', compact('jadwal'));
+    }
+
 }

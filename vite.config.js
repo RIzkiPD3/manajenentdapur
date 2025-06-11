@@ -10,4 +10,9 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+
+    server: {
+        host: '172.40.0.53',
+        port: 3000,
+      }
 });

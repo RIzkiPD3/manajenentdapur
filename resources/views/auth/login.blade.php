@@ -133,16 +133,6 @@
                     </span>
                 </button>
             </form>
-
-            <!-- Divider -->
-            <div class="mt-8 pt-6 border-t border-gray-200">
-                <p class="text-center text-sm text-gray-600">
-                    Don't have an account?
-                    <a href="#" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors">
-                        Sign up here
-                    </a>
-                </p>
-            </div>
         </div>
     </div>
 </body>

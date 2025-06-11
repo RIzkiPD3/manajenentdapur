@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jadwal_pikets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kelompok_piket_id')->constrained()->onDelete('cascade');
-            $table->date('tanggal');
+            $table->enum('hari' , ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']);
             $table->timestamps();
         });
     }

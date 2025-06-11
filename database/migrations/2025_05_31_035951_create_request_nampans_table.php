@@ -14,9 +14,8 @@ return new class extends Migration
     Schema::create('request_nampans', function (Blueprint $table) {
         $table->id();
         $table->foreignId('user_id')->constrained()->onDelete('cascade'); // angkatan
-        $table->foreignId('kelompok_piket_id')->constrained()->onDelete('cascade'); // tujuan
         $table->integer('jumlah_nampan');
-        $table->date('tanggal');
+        $table->text('keterangan')->nullable();
         $table->timestamps();
     });
 }

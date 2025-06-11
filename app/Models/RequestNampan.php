@@ -8,9 +8,17 @@ class RequestNampan extends Model
 {
     protected $fillable = [
         'user_id',
-        'kelompok_piket_id',
         'jumlah_nampan',
-        'tanggal'
+        'keterangan',
     ];
-}
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function kelompok()
+    {
+        return $this->belongsTo(JadwalPiket::class, 'kelompok_id');
+    }
+}

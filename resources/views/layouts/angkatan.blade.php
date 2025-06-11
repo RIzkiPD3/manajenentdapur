@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - @yield('title', 'Manajemen Dapur')</title>
+    <title>Angkatan - @yield('title', 'Manajemen Dapur')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .sidebar-gradient {
             background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%);
@@ -24,10 +23,6 @@
         .main-gradient {
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
-        .nav-hover.active {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateX(8px);
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-slate-200 font-sans">
@@ -45,74 +40,64 @@
         <div class="relative z-10 p-8 space-y-8">
             <!-- Header -->
             <div class="text-center mb-8">
-                <div class="text-4xl mb-3">
-                    <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <h1 class="text-2xl font-bold tracking-wide">Admin Panel</h1>
+                <div class="text-4xl mb-3">👥</div>
+                <h1 class="text-2xl font-bold tracking-wide">Angkatan</h1>
                 <div class="w-16 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto mt-2 rounded-full"></div>
             </div>
 
             <!-- Navigation -->
             <nav class="space-y-3">
-                <a href="{{ url('/admin/dashboard') }}"
-                   class="nav-hover {{ request()->is('admin/dashboard') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
+                <a href="{{ route('angkatan.dashboard') }}"
+                   class="nav-hover flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
                     <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-gauge-high text-sm"></i>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
                     </div>
                     <span class="font-medium">Dashboard</span>
                 </a>
 
-                <a href="{{ url('/admin/menus') }}"
-                   class="nav-hover {{ request()->is('admin/menus*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
+                <a href="{{ route('angkatan.request-nampan.create') }}"
+                   class="nav-hover flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
                     <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-utensils text-sm"></i>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
                     </div>
-                    <span class="font-medium">Menu Makanan</span>
+                    <span class="font-medium">Request Nampan</span>
                 </a>
 
-                <a href="{{ url('/admin/kelompok') }}"
-                   class="nav-hover {{ request()->is('admin/kelompok*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
+                <a href="{{ route('angkatan.riwayat-request') }}"
+                   class="nav-hover flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
                     <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-users text-sm"></i>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                        </svg>
                     </div>
-                    <span class="font-medium">Kelompok</span>
-                </a>
-
-                <a href="{{ url('/admin/jadwal') }}"
-                   class="nav-hover {{ request()->is('admin/jadwal*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-calendar-days text-sm"></i>
-                    </div>
-                    <span class="font-medium">Jadwal</span>
-                </a>
-
-                <a href="{{ url('/admin/sesi-absensi') }}"
-                   class="nav-hover {{ request()->is('admin/sesi-absensi*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-clipboard-check text-sm"></i>
-                    </div>
-                    <span class="font-medium">Sesi Absensi</span>
+                    <span class="font-medium">Riwayat Permintaan</span>
                 </a>
             </nav>
 
-            <!-- User Info Card -->
+            <!-- User Info Card (Optional) -->
             <div class="glass-effect rounded-xl p-4 mt-8">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-user text-white text-sm"></i>
+                        <span class="text-white font-bold text-sm">{{ substr(auth()->user()->name ?? 'A', 0, 1) }}</span>
                     </div>
                     <div>
-                        <p class="text-white/90 font-medium text-sm">{{ auth()->user()->name ?? 'Admin' }}</p>
-                        <p class="text-white/60 text-xs">System Administrator</p>
+                        <p class="text-white/90 font-medium text-sm">{{ auth()->user()->name ?? 'Anggota' }}</p>
+                        <p class="text-white/60 text-xs">Angkatan Member</p>
                     </div>
                 </div>
             </div>
 
             <!-- Logout Button -->
-            <form method="POST" action="{{ url('/logout') }}" class="pt-4">
+            <form method="POST" action="{{ route('logout') }}" class="pt-4">
                 @csrf
                 <button type="submit" class="w-full py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 01-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+                    </svg>
                     <span>Logout</span>
                 </button>
             </form>
@@ -126,12 +111,14 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800">@yield('page-title', 'Dashboard')</h2>
-                    <p class="text-gray-600 mt-1">@yield('page-description', 'Kelola sistem manajemen dapur')</p>
+                    <p class="text-gray-600 mt-1">@yield('page-description', 'Kelola permintaan nampan dengan mudah')</p>
                 </div>
                 <div class="flex items-center space-x-4">
                     <!-- Notification Bell -->
                     <button class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-white/50 rounded-lg transition-colors">
-                        <i class="fa-solid fa-bell text-lg"></i>
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                        </svg>
                         <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                     </button>
 
@@ -145,22 +132,8 @@
 
         <!-- Content Area -->
         <div class="p-8">
-            <div class="max-w-7xl mx-auto">
-                @yield('content')
-            </div>
+            @yield('content')
         </div>
-
-        <!-- Footer -->
-        <footer class="px-8 py-4 border-t border-white/20 bg-white/30 backdrop-blur-sm mt-auto">
-            <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <p class="text-sm text-gray-600">© 2024 Manajemen Dapur. All rights reserved.</p>
-                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                    <span>Made with</span>
-                    <i class="fa-solid fa-heart text-red-500"></i>
-                    <span>Laravel & TailwindCSS</span>
-                </div>
-            </div>
-        </footer>
     </main>
 
 </div>

@@ -15,7 +15,7 @@
                 <div class="hidden md:flex items-center space-x-4">
                     <div class="bg-white/70 backdrop-blur-sm rounded-full px-6 py-3 shadow-sm border border-white/20">
                         <span class="text-sm text-gray-600">Total Jadwal: </span>
-                        <span class="font-semibold text-blue-600">{{ $jadwal->count() }}</span>
+                        <span class="font-semibold text-blue-600">{{ $jadwals->count() }}</span>
                     </div>
                 </div>
             </div>
@@ -85,15 +85,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                    <span>Tanggal</span>
-                                </div>
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                <div class="flex items-center space-x-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <span>Shift</span>
+                                    <span>Hari</span>
                                 </div>
                             </th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
@@ -107,7 +99,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @forelse($jadwal as $item)
+                        @forelse($jadwals as $item)
                             <tr class="group hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
@@ -124,41 +116,20 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <div class="font-semibold text-gray-900">{{ $item->kelompok->nama }}</div>
+                                            <div class="font-semibold text-gray-900">{{ $item->kelompok->nama_kelompok ?? 'Nama Kelompok Tidak Ada' }}</div>
                                             <div class="text-sm text-gray-500">Tim Piket</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="bg-gradient-to-r from-purple-100 to-pink-100 px-3 py-2 rounded-lg inline-block">
-                                        <div class="font-semibold text-purple-800">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</div>
-                                        <div class="text-xs text-purple-600">{{ \Carbon\Carbon::parse($item->tanggal)->format('l') }}</div>
+                                        <div class="font-semibold text-purple-800">{{ $item->hari }}</div>
+                                        <div class="text-xs text-purple-600">Hari Piket</div>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                                                @if($item->shift == 'Pagi') bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-800
-                                                @elseif($item->shift == 'Siang') bg-gradient-to-r from-blue-100 to-cyan-100 text-cyan-800
-                                                @else bg-gradient-to-r from-indigo-100 to-purple-100 text-purple-800 @endif">
-                                        @if($item->shift == 'Pagi')
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                            </svg>
-                                        @elseif($item->shift == 'Siang')
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                            </svg>
-                                        @else
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                                            </svg>
-                                        @endif
-                                        {{ $item->shift }}
-                                    </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <div class="flex justify-center space-x-3">
-                                        <a href="{{ route('jadwal.edit', $item->id) }}"
+                                        <a href="{{ route('admin.jadwal.edit', $item->id) }}"
                                            class="group flex items-center space-x-1 bg-gradient-to-r from-blue-500 to-indigo-500
                                                   hover:from-blue-600 hover:to-indigo-600 text-white px-4 py-2 rounded-lg
                                                   transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
@@ -167,7 +138,7 @@
                                             </svg>
                                             <span class="text-sm font-medium">Edit</span>
                                         </a>
-                                        <form action="{{ route('jadwal.destroy', $item->id) }}" method="POST" class="inline-block">
+                                        <form action="{{ route('admin.jadwal.destroy', $item->id) }}" method="POST" class="inline-block">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -186,7 +157,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center">
+                                <td colspan="4" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center justify-center space-y-4">
                                         <div class="w-20 h-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center">
                                             <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,13 +187,13 @@
         </div>
 
         <!-- Footer Stats -->
-        @if($jadwal->count() > 0)
+        @if($jadwals->count() > 0)
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Jadwal</p>
-                            <p class="text-3xl font-bold text-blue-600">{{ $jadwal->count() }}</p>
+                            <p class="text-3xl font-bold text-blue-600">{{ $jadwals->count() }}</p>
                         </div>
                         <div class="p-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +207,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Kelompok Aktif</p>
-                            <p class="text-3xl font-bold text-emerald-600">{{ $jadwal->pluck('kelompok.nama')->unique()->count() }}</p>
+                            <p class="text-3xl font-bold text-emerald-600">{{ $jadwals->pluck('kelompok.nama_kelompok')->unique()->count() }}</p>
                         </div>
                         <div class="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,8 +220,8 @@
                 <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Bulan Ini</p>
-                            <p class="text-3xl font-bold text-purple-600">{{ $jadwal->filter(function($item) { return \Carbon\Carbon::parse($item->tanggal)->month == now()->month; })->count() }}</p>
+                            <p class="text-sm font-medium text-gray-600">Hari Berbeda</p>
+                            <p class="text-3xl font-bold text-purple-600">{{ $jadwals->pluck('hari')->unique()->count() }}</p>
                         </div>
                         <div class="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

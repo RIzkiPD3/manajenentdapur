@@ -36,9 +36,14 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
-        Route::resource('menus', MenuController::class)->except(['show']);
+        Route::resource('menus', MenuController::class);
         Route::resource('kelompok', KelompokPiketController::class)->except(['show']);
+
+        // PERBAIKAN: Jadwal routes dengan nama yang benar
         Route::resource('jadwal', JadwalPiketController::class)->except(['show']);
+        // Tambahan route alias untuk backward compatibility
+        Route::put('/jadwal/{jadwal}', [JadwalPiketController::class, 'update'])->name('jadwal.update');
+
         Route::resource('sesi-absensi', SesiAbsensiController::class)->except(['show']);
 
         // Admin dapat melihat semua request nampan
@@ -63,6 +68,11 @@ Route::middleware(['auth', PetugasMiddleware::class])
         Route::get('/riwayat-request', [RequestNampanController::class, 'riwayatSemua'])->name('riwayat-request');
         Route::patch('/request-nampan/{id}/status', [RequestNampanController::class, 'updateStatus'])->name('request-nampan.update-status');
         Route::delete('/request-nampan/{id}', [RequestNampanController::class, 'destroy'])->name('request-nampan.destroy');
+
+        // PERBAIKAN - Tambahkan route yang hilang untuk nampan
+        Route::get('/nampan', [RequestNampanController::class, 'index'])->name('nampan.index');
+        Route::get('/nampan/riwayat', [RequestNampanController::class, 'riwayatSemua'])->name('nampan.riwayat');
+        Route::delete('/nampan/{id}', [RequestNampanController::class, 'destroy'])->name('nampan.destroy');
     });
 
 // ================= ANGKATAN ===================

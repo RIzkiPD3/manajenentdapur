@@ -7,16 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class AbsensiPetugas extends Model
 {
     protected $fillable = [
-        'sesi_absensi_id',
+        'tanggal',
         'kelompok_piket_id',
-        'nama_petugas',
-        'status_hadir',
-        'waktu_isi'
+        'sesi_absensi_id',
+        'daftar_hadir',
     ];
 
     protected $casts = [
-        'status_hadir' => 'boolean',
-        'waktu_isi' => 'datetime',
+        'tanggal' => 'date',
+        'daftar_hadir' => 'array',
     ];
-}
 
+    public function kelompok()
+    {
+        return $this->belongsTo(KelompokPiket::class);
+    }
+
+    public function sesi()
+    {
+        return $this->belongsTo(SesiAbsensi::class, 'sesi_absensi_id');
+    }
+}

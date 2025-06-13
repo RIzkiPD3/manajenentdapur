@@ -6,9 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class KelompokPiket extends Model
 {
-    protected $fillable = ['nama_kelompok', 'anggota'];
+    // ✅ PERBAIKAN: Sesuaikan dengan nama kolom di database
+    protected $fillable = ['nama_kelompok', 'anggota']; // Ubah dari 'nama' ke 'nama_kelompok'
 
     protected $casts = [
         'anggota' => 'array',
     ];
+
+    /**
+     * Relasi ke JadwalPiket
+     */
+    public function jadwalPikets()
+    {
+        return $this->hasMany(JadwalPiket::class);
+    }
 }

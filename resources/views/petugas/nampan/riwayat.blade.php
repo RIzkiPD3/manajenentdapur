@@ -1,373 +1,429 @@
 @extends('layouts.petugas')
 
+@section('title', 'Riwayat Request Nampan')
+
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header Section -->
-        <div class="text-center mb-10">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full mb-4 shadow-lg">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+<div class="container mx-auto px-4 py-6">
+    <!-- Header Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Riwayat Request Nampan</h1>
+                <p class="text-gray-600 mt-2">Kelola semua riwayat permintaan nampan dari santri</p>
             </div>
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Riwayat Permintaan</h1>
-            <p class="text-lg text-gray-600">Catatan lengkap semua permintaan nampan dari angkatan</p>
-            <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-600 mx-auto mt-4 rounded-full"></div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('petugas.nampan.index') }}"
+                   class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 focus:ring-4 focus:ring-blue-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                    Request Aktif
+                </a>
+            </div>
         </div>
+    </div>
 
-        <!-- Filter & Search Section -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
-                <div class="flex-1">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </div>
-                        <input type="text" placeholder="Cari berdasarkan angkatan atau keterangan..."
-                               class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                    </div>
+    <!-- Success Alert -->
+    @if(session('success'))
+        <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-6 rounded-r-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
                 </div>
-                <div class="flex space-x-3">
-                    <select class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                        <option>Semua Angkatan</option>
-                        <option>2021</option>
-                        <option>2022</option>
-                        <option>2023</option>
-                        <option>2024</option>
-                    </select>
-                    <select class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                        <option>Semua Periode</option>
-                        <option>Bulan Ini</option>
-                        <option>3 Bulan Terakhir</option>
-                        <option>6 Bulan Terakhir</option>
-                        <option>Tahun Ini</option>
-                    </select>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
                 </div>
             </div>
         </div>
+    @endif
 
-        <!-- Statistics Cards -->
-        @if(!$requests->isEmpty())
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total Permintaan</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $requests->count() }}</p>
-                    </div>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <!-- Total Requests -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Total Request</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $requests->count() }}</p>
                 </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total Nampan</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $requests->sum('jumlah') }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Angkatan Aktif</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $requests->unique('angkatan')->count() }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Rata-rata/Permintaan</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $requests->count() > 0 ? round($requests->sum('jumlah') / $requests->count(), 1) : 0 }}</p>
-                    </div>
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
                 </div>
             </div>
         </div>
-        @endif
 
-        <!-- Data Table -->
-        <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            @if($requests->isEmpty())
-                <!-- Empty State -->
-                <div class="p-12 text-center">
-                    <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <!-- Approved Requests -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Disetujui</p>
+                    <p class="text-2xl font-bold text-green-600">{{ $requests->where('status', 'approved')->count() }}</p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-full">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rejected Requests -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Ditolak</p>
+                    <p class="text-2xl font-bold text-red-600">{{ $requests->where('status', 'rejected')->count() }}</p>
+                </div>
+                <div class="p-3 bg-red-100 rounded-full">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Menunggu</p>
+                    <p class="text-2xl font-bold text-yellow-600">{{ $requests->where('status', 'pending')->count() }}</p>
+                </div>
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+                <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-2">Cari Request</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Riwayat</h3>
-                    <p class="text-gray-500 mb-6">Belum ada riwayat permintaan nampan yang tercatat dalam sistem.</p>
-                    <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full font-medium hover:from-purple-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Kembali ke Dashboard
-                    </div>
+                    <input type="text" id="searchInput"
+                           placeholder="Cari nama santri atau keterangan..."
+                           class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
                 </div>
-            @else
-                <!-- Table Header -->
-                <div class="bg-gradient-to-r from-purple-500 to-blue-600 px-8 py-6">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-semibold text-white flex items-center">
-                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            Riwayat Lengkap Permintaan
-                        </h3>
-                        <div class="text-sm text-purple-100">
-                            {{ $requests->count() }} Total Record
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div class="sm:w-48">
+                <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-2">Filter Status</label>
+                <select id="statusFilter"
+                        class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Menunggu</option>
+                    <option value="approved">Disetujui</option>
+                    <option value="rejected">Ditolak</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-                <!-- Table Content -->
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th class="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                        <span>Tanggal</span>
-                                    </div>
-                                </th>
-                                <th class="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                                        </svg>
-                                        <span>Angkatan</span>
-                                    </div>
-                                </th>
-                                <th class="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                        </svg>
-                                        <span>Jumlah</span>
-                                    </div>
-                                </th>
-                                <th class="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                        </svg>
-                                        <span>Keterangan</span>
-                                    </div>
-                                </th>
-                                <th class="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Status
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-100">
-                            @foreach ($requests as $index => $r)
-                                <tr class="hover:bg-gray-50 transition-colors duration-200 group">
-                                    <td class="px-8 py-6 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 shadow-lg">
-                                                {{ $index + 1 }}
-                                            </div>
-                                            <div>
-                                                <div class="text-sm font-semibold text-gray-900">
-                                                    {{ $r->created_at->format('d M Y') }}
-                                                </div>
-                                                <div class="text-xs text-gray-500">
-                                                    {{ $r->created_at->format('H:i') }} WIB
-                                                </div>
-                                            </div>
+    <!-- Table Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Daftar Request</h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Santri</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan Petugas</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="requestTable">
+                    @forelse($requests as $index => $request)
+                        <tr class="hover:bg-gray-50 transition-colors duration-150 request-row"
+                            data-status="{{ $request->status }}"
+                            data-search="{{ strtolower($request->user->name . ' ' . ($request->keterangan ?? '')) }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ $index + 1 }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-sm">
+                                            <span class="text-sm font-bold text-white">
+                                                {{ strtoupper(substr($request->user->name, 0, 2)) }}
+                                            </span>
                                         </div>
-                                    </td>
-                                    <td class="px-8 py-6 whitespace-nowrap">
-                                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ $request->user->name }}</div>
+                                        <div class="text-sm text-gray-500">{{ $request->user->email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                    {{ $request->jumlah_nampan }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <div class="max-w-xs truncate" title="{{ $request->keterangan }}">
+                                    {{ $request->keterangan ?: 'Tidak ada keterangan' }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($request->status === 'pending')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Menunggu
+                                    </span>
+                                @elseif($request->status === 'approved')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Disetujui
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Ditolak
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <div class="font-medium">{{ $request->created_at->format('d/m/Y') }}</div>
+                                <div class="text-xs text-gray-400">{{ $request->created_at->format('H:i') }} WIB</div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                <div class="max-w-xs truncate" title="{{ $request->catatan_petugas }}">
+                                    {{ $request->catatan_petugas ?: 'Belum ada catatan' }}
+                                </div>
+                                @if($request->processed_at)
+                                    <div class="text-xs text-gray-400 mt-1">
+                                        {{ $request->processed_at->format('d/m/Y H:i') }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="openDetailModal({{ json_encode($request) }})"
+                                            class="text-blue-600 hover:text-blue-900 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                                            title="Lihat Detail">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </button>
+
+                                    <form action="{{ route('petugas.nampan.destroy', $request->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                onclick="return confirm('Yakin ingin menghapus request ini?')"
+                                                class="text-red-600 hover:text-red-900 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                                                title="Hapus Request">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
-                                            Angkatan {{ $r->angkatan }}
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-6 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                                </svg>
-                                            </div>
-                                            <span class="text-lg font-bold text-gray-900">{{ $r->jumlah }}</span>
-                                            <span class="text-sm text-gray-500 ml-1">unit</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-6">
-                                        @if($r->keterangan)
-                                            <div class="max-w-xs">
-                                                <p class="text-sm text-gray-900 leading-relaxed">{{ Str::limit($r->keterangan, 80) }}</p>
-                                                @if(strlen($r->keterangan) > 80)
-                                                    <button class="text-xs text-purple-600 hover:text-purple-800 mt-1 font-medium">
-                                                        Lihat selengkapnya...
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        @else
-                                            <span class="text-sm text-gray-400 italic">Tidak ada keterangan</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-8 py-6 whitespace-nowrap">
-                                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                                            Selesai
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Table Footer -->
-                <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
-                    <div class="flex items-center justify-between text-sm text-gray-500">
-                        <div>
-                            Menampilkan {{ $requests->count() }} dari {{ $requests->count() }} total permintaan
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span>Data diperbarui:</span>
-                            <span class="font-medium text-gray-700">{{ now()->format('d M Y, H:i') }} WIB</span>
-                        </div>
-                    </div>
-                </div>
-            @endif
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada riwayat request</h3>
+                                    <p class="text-gray-500">Riwayat request nampan akan muncul di sini setelah santri mengajukan permintaan</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-
-        <!-- Action Buttons -->
-        @if(!$requests->isEmpty())
-        <div class="mt-8 flex justify-center space-x-4">
-            <button class="inline-flex items-center px-6 py-3 bg-white border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                </svg>
-                Cetak Laporan
-            </button>
-            <button class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full font-medium hover:from-purple-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
-                Refresh Data
-            </button>
-        </div>
-        @endif
     </div>
 </div>
 
-@push('styles')
-<style>
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+<!-- Detail Modal -->
+<div id="detailModal" class="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border-0 w-11/12 md:w-2/3 lg:w-1/2 shadow-2xl rounded-2xl bg-white">
+        <div class="mt-3">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-6 pb-3 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-gray-900">Detail Request Nampan</h3>
+                <button onclick="closeDetailModal()"
+                        class="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
 
-    .animate-fade-in-up {
-        animation: fadeInUp 0.6s ease-out;
-    }
+            <!-- Modal Content -->
+            <div id="modalContent" class="space-y-4">
+                <!-- Content akan diisi dengan JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
 
-    .group:hover .group-hover\:scale-105 {
-        transform: scale(1.05);
-    }
-
-    /* Custom scrollbar for table */
-    .overflow-x-auto::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .overflow-x-auto::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 10px;
-    }
-
-    .overflow-x-auto::-webkit-scrollbar-thumb {
-        background: linear-gradient(90deg, #8b5cf6, #3b82f6);
-        border-radius: 10px;
-    }
-
-    .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(90deg, #7c3aed, #2563eb);
-    }
-</style>
-@endpush
-
-@push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add fade-in animation to table rows
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach((row, index) => {
-            setTimeout(() => {
-                row.classList.add('animate-fade-in-up');
-            }, index * 50);
-        });
+// Filter functionality
+document.getElementById('searchInput').addEventListener('input', filterTable);
+document.getElementById('statusFilter').addEventListener('change', filterTable);
 
-        // Search functionality
-        const searchInput = document.querySelector('input[type="text"]');
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(searchTerm) ? '' : 'none';
-                });
-            });
-        }
+function filterTable() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const rows = document.querySelectorAll('.request-row');
 
-        // Expand/collapse long descriptions
-        document.querySelectorAll('[data-expand]').forEach(button => {
-            button.addEventListener('click', function() {
-                const description = this.previousElementSibling;
-                description.classList.toggle('line-clamp-2');
-                this.textContent = description.classList.contains('line-clamp-2')
-                    ? 'Lihat selengkapnya...'
-                    : 'Tutup';
-            });
-        });
+    rows.forEach(row => {
+        const searchData = row.getAttribute('data-search');
+        const statusData = row.getAttribute('data-status');
+
+        const matchesSearch = searchData.includes(searchTerm);
+        const matchesStatus = statusFilter === '' || statusData === statusFilter;
+
+        row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
     });
+}
+
+// Modal functions
+function openDetailModal(request) {
+    const modal = document.getElementById('detailModal');
+    const content = document.getElementById('modalContent');
+
+    // Format tanggal
+    const createdDate = new Date(request.created_at).toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    const processedDate = request.processed_at ?
+        new Date(request.processed_at).toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }) : null;
+
+    // Status styling
+    let statusBadge = '';
+    if (request.status === 'pending') {
+        statusBadge = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">Menunggu</span>';
+    } else if (request.status === 'approved') {
+        statusBadge = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">Disetujui</span>';
+    } else {
+        statusBadge = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200">Ditolak</span>';
+    }
+
+    content.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Informasi Santri</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-white font-bold text-sm">${request.user.name.substring(0, 2).toUpperCase()}</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">${request.user.name}</p>
+                                <p class="text-sm text-gray-500">${request.user.email}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Detail Request</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Jumlah Nampan:</span>
+                            <span class="font-medium">${request.jumlah_nampan} buah</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Status:</span>
+                            <span>${statusBadge}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Tanggal Request:</span>
+                            <span class="font-medium">${createdDate}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Keterangan</h4>
+                    <p class="text-gray-700 leading-relaxed">${request.keterangan || 'Tidak ada keterangan'}</p>
+                </div>
+
+                ${request.catatan_petugas || processedDate ? `
+                <div class="bg-orange-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Catatan Petugas</h4>
+                    <p class="text-gray-700 leading-relaxed mb-2">${request.catatan_petugas || 'Belum ada catatan'}</p>
+                    ${processedDate ? `<p class="text-sm text-gray-500">Diproses pada: ${processedDate}</p>` : ''}
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDetailModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('detailModal').classList.contains('hidden')) {
+        closeDetailModal();
+    }
+});
 </script>
-@endpush
 @endsection

@@ -8,7 +8,9 @@ use App\Http\Controllers\{
     JadwalPiketController,
     SesiAbsensiController,
     AbsensiPetugasController,
-    RequestNampanController
+    RequestNampanController,
+    AdminDashboardController,
+    AngkatanController
 };
 use App\Http\Middleware\{
     RoleRedirect,
@@ -27,29 +29,30 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Role redirect (auth + role redirect middleware)
-Route::middleware(['auth', RoleRedirect::class])->get('/dashboard', fn() => null);
+// Route register
+Route::get('/register', [AngkatanController::class, 'create'])->name('register');
+Route::post('/register', [AngkatanController::class, 'store'])->name('register.store');
+
+// Role redirect
+Route::middleware(['auth', RoleRedirect::class])->get('/dashboard', fn() => null)->name('dashboard');
 
 // ================= ADMIN ===================
 Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        // Management Angkatan
+        Route::resource('angkatan', AngkatanController::class)->except(['show']);
         Route::resource('menus', MenuController::class);
         Route::resource('kelompok', KelompokPiketController::class)->except(['show']);
-
-        // PERBAIKAN: Jadwal routes dengan nama yang benar
         Route::resource('jadwal', JadwalPiketController::class)->except(['show']);
-        // Tambahan route alias untuk backward compatibility
-        Route::put('/jadwal/{jadwal}', [JadwalPiketController::class, 'update'])->name('jadwal.update');
-
         Route::resource('sesi-absensi', SesiAbsensiController::class)->except(['show']);
 
         // Admin dapat melihat semua request nampan
         Route::get('/request-nampan', [RequestNampanController::class, 'index'])->name('request-nampan');
         Route::get('/riwayat-request', [RequestNampanController::class, 'riwayatSemua'])->name('riwayat-request');
-        Route::patch('/request-nampan/{id}/status', [RequestNampanController::class, 'updateStatus'])->name('request-nampan.update-status');
         Route::delete('/request-nampan/{id}', [RequestNampanController::class, 'destroy'])->name('request-nampan.destroy');
     });
 
@@ -60,16 +63,22 @@ Route::middleware(['auth', PetugasMiddleware::class])
     ->group(function () {
         Route::get('/dashboard', fn() => view('petugas.dashboard'))->name('dashboard');
         Route::get('/jadwal', [JadwalPiketController::class, 'jadwalPetugas'])->name('jadwal');
+
+        // ABSENSI ROUTES
         Route::get('/absensi', [AbsensiPetugasController::class, 'index'])->name('absensi.index');
-        Route::post('/absensi/{sesi}', [AbsensiPetugasController::class, 'store'])->name('absensi.store');
+        Route::get('/absensi/report', [AbsensiPetugasController::class, 'report'])->name('absensi.report');
+        Route::get('/absensi/{tanggal}', [AbsensiPetugasController::class, 'show'])->name('absensi.show');
+        Route::post('/absensi/{tanggal}', [AbsensiPetugasController::class, 'store'])->name('absensi.store');
+        Route::post('/absensi/{tanggal}/bulk', [AbsensiPetugasController::class, 'bulkStore'])->name('absensi.bulk-store');
+
+        Route::resource('kelompok', KelompokPiketController::class)->except(['show']);
 
         // Petugas mengelola request nampan
         Route::get('/request-nampan', [RequestNampanController::class, 'index'])->name('request-nampan');
         Route::get('/riwayat-request', [RequestNampanController::class, 'riwayatSemua'])->name('riwayat-request');
-        Route::patch('/request-nampan/{id}/status', [RequestNampanController::class, 'updateStatus'])->name('request-nampan.update-status');
         Route::delete('/request-nampan/{id}', [RequestNampanController::class, 'destroy'])->name('request-nampan.destroy');
 
-        // PERBAIKAN - Tambahkan route yang hilang untuk nampan
+        // Route untuk nampan
         Route::get('/nampan', [RequestNampanController::class, 'index'])->name('nampan.index');
         Route::get('/nampan/riwayat', [RequestNampanController::class, 'riwayatSemua'])->name('nampan.riwayat');
         Route::delete('/nampan/{id}', [RequestNampanController::class, 'destroy'])->name('nampan.destroy');
@@ -82,12 +91,10 @@ Route::middleware(['auth', AngkatanMiddleware::class])
     ->group(function () {
         Route::get('/dashboard', fn() => view('angkatan.dashboard'))->name('dashboard');
 
-        // PERBAIKAN UTAMA - Semua kemungkinan nama route
-        Route::get('/request-nampan', [RequestNampanController::class, 'create'])->name('request-nampan');
+        // Routes untuk request nampan - DIPERBAIKI
+        Route::get('/request-nampan/create', [RequestNampanController::class, 'create'])->name('request-nampan.create');
+        Route::get('/request-nampan', [RequestNampanController::class, 'create'])->name('request-nampan.index');
         Route::post('/request-nampan', [RequestNampanController::class, 'store'])->name('request-nampan.store');
-
-        // Alias untuk backward compatibility
-        Route::get('/request-nampan-create', [RequestNampanController::class, 'create'])->name('request-nampan.create');
 
         // Routes untuk riwayat request
         Route::get('/riwayat-request', [RequestNampanController::class, 'riwayatSaya'])->name('riwayat-request');

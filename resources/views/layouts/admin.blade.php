@@ -3,141 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - @yield('title', 'Manajemen Dapur')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>@yield('title', 'Admin - Manajemen Dapur')</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .sidebar-gradient {
-            background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%);
-        }
-        .glass-effect {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .nav-hover {
-            transition: all 0.3s ease;
-        }
-        .nav-hover:hover {
-            transform: translateX(8px);
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .main-gradient {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        }
-        .nav-hover.active {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateX(8px);
-        }
-    </style>
+    @stack('styles')
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-slate-200 font-sans">
+<body class="bg-gray-50 font-sans">
 
 <div class="flex min-h-screen">
 
     <!-- Sidebar -->
-    <aside class="w-72 sidebar-gradient text-white shadow-2xl relative overflow-hidden">
-        <!-- Background decoration -->
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-white rounded-full"></div>
-            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white rounded-full"></div>
-        </div>
-
-        <div class="relative z-10 p-8 space-y-8">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <div class="text-4xl mb-3">
-                    <i class="fa-solid fa-user-shield"></i>
+    <aside class="w-64 hidden md:block bg-slate-800 shadow-lg">
+        <div class="p-6 space-y-6">
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-utensils text-white text-lg"></i>
                 </div>
-                <h1 class="text-2xl font-bold tracking-wide">Admin Panel</h1>
-                <div class="w-16 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto mt-2 rounded-full"></div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">Admin Panel</h1>
+                    <p class="text-sm text-slate-300">Manajemen Dapur</p>
+                </div>
             </div>
 
             <!-- Navigation -->
-            <nav class="space-y-3">
-                <a href="{{ url('/admin/dashboard') }}"
-                   class="nav-hover {{ request()->is('admin/dashboard') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-gauge-high text-sm"></i>
-                    </div>
+            <nav class="space-y-2">
+                <a href="{{ route('admin.dashboard') }}"
+                   class="flex items-center space-x-3 px-4 py-3 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-orange-400 transition-colors group {{ request()->routeIs('admin.dashboard') ? 'bg-slate-700 text-orange-400' : '' }}">
+                    <i class="fa-solid fa-gauge-high w-5 text-center group-hover:text-orange-400 {{ request()->routeIs('admin.dashboard') ? 'text-orange-400' : '' }}"></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
 
-                <a href="{{ url('/admin/menus') }}"
-                   class="nav-hover {{ request()->is('admin/menus*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-utensils text-sm"></i>
-                    </div>
-                    <span class="font-medium">Menu Makanan</span>
+                <a href="{{ route('admin.menus.index') }}"
+                   class="flex items-center space-x-3 px-4 py-3 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-green-400 transition-colors group {{ request()->routeIs('admin.menus.*') ? 'bg-slate-700 text-green-400' : '' }}">
+                    <i class="fa-solid fa-utensils w-5 text-center group-hover:text-green-400 {{ request()->routeIs('admin.menus.*') ? 'text-green-400' : '' }}"></i>
+                    <span class="font-medium">Menu</span>
                 </a>
 
-                <a href="{{ url('/admin/kelompok') }}"
-                   class="nav-hover {{ request()->is('admin/kelompok*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-users text-sm"></i>
-                    </div>
+                <a href="{{ route('admin.kelompok.index') }}"
+                   class="flex items-center space-x-3 px-4 py-3 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-blue-400 transition-colors group {{ request()->routeIs('admin.kelompok.*') ? 'bg-slate-700 text-blue-400' : '' }}">
+                    <i class="fa-solid fa-users w-5 text-center group-hover:text-blue-400 {{ request()->routeIs('admin.kelompok.*') ? 'text-blue-400' : '' }}"></i>
                     <span class="font-medium">Kelompok</span>
                 </a>
 
-                <a href="{{ url('/admin/jadwal') }}"
-                   class="nav-hover {{ request()->is('admin/jadwal*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-calendar-days text-sm"></i>
-                    </div>
+                <a href="{{ route('admin.jadwal.index') }}"
+                   class="flex items-center space-x-3 px-4 py-3 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-purple-400 transition-colors group {{ request()->routeIs('admin.jadwal.*') ? 'bg-slate-700 text-purple-400' : '' }}">
+                    <i class="fa-solid fa-calendar-days w-5 text-center group-hover:text-purple-400 {{ request()->routeIs('admin.jadwal.*') ? 'text-purple-400' : '' }}"></i>
                     <span class="font-medium">Jadwal</span>
                 </a>
 
-                <a href="{{ url('/admin/sesi-absensi') }}"
-                   class="nav-hover {{ request()->is('admin/sesi-absensi*') ? 'active' : '' }} flex items-center space-x-4 px-4 py-3 rounded-xl text-white/90 hover:text-white group">
-                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <i class="fa-solid fa-clipboard-check text-sm"></i>
-                    </div>
+                <a href="{{ route('admin.sesi-absensi.index') }}"
+                   class="flex items-center space-x-3 px-4 py-3 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-cyan-400 transition-colors group {{ request()->routeIs('admin.sesi-absensi.*') ? 'bg-slate-700 text-cyan-400' : '' }}">
+                    <i class="fa-solid fa-clipboard-check w-5 text-center group-hover:text-cyan-400 {{ request()->routeIs('admin.sesi-absensi.*') ? 'text-cyan-400' : '' }}"></i>
                     <span class="font-medium">Sesi Absensi</span>
                 </a>
             </nav>
 
-            <!-- User Info Card -->
-            <div class="glass-effect rounded-xl p-4 mt-8">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+            <!-- User Info -->
+            <div class="pt-6 border-t border-slate-600">
+                <div class="flex items-center space-x-3 px-4 py-3">
+                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
                         <i class="fa-solid fa-user text-white text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-white/90 font-medium text-sm">{{ auth()->user()->name ?? 'Admin' }}</p>
-                        <p class="text-white/60 text-xs">System Administrator</p>
+                        <p class="text-sm font-medium text-white">{{ Auth::user()->name ?? 'Admin User' }}</p>
+                        <p class="text-xs text-slate-400">Administrator</p>
                     </div>
                 </div>
             </div>
 
             <!-- Logout Button -->
-            <form method="POST" action="{{ url('/logout') }}" class="pt-4">
-                @csrf
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+            <div class="pt-2">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+                        <span class="font-medium">Logout</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 main-gradient min-h-screen">
-        <!-- Content Header -->
-        <div class="bg-white/50 backdrop-blur-sm border-b border-white/20 px-8 py-6">
+    <main class="flex-1 bg-gray-50">
+        <!-- Header Bar -->
+        <div class="bg-white shadow-sm border-b border-gray-200 px-8 py-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">@yield('page-title', 'Dashboard')</h2>
-                    <p class="text-gray-600 mt-1">@yield('page-description', 'Kelola sistem manajemen dapur')</p>
+                    <h2 class="text-2xl font-bold text-slate-800">@yield('page-title', 'Dashboard')</h2>
+                    <p class="text-slate-600 text-sm">@yield('page-description', 'Kelola sistem manajemen dapur')</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <!-- Notification Bell -->
-                    <button class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-white/50 rounded-lg transition-colors">
-                        <i class="fa-solid fa-bell text-lg"></i>
+                    <!-- Notification -->
+                    <button class="relative p-2 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors">
+                        <i class="fa-solid fa-bell"></i>
                         <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                     </button>
 
-                    <!-- Current Time -->
-                    <div class="text-sm text-gray-600 bg-white/50 px-3 py-2 rounded-lg">
-                        <span id="current-time"></span>
+                    <!-- Date -->
+                    <div class="text-sm text-slate-600 bg-slate-100 px-3 py-2 rounded-lg">
+                        <span id="current-date">{{ date('d M Y') }}</span>
+                    </div>
+
+                    <!-- Time -->
+                    <div class="text-sm text-slate-600 bg-slate-100 px-3 py-2 rounded-lg">
+                        <span id="current-time">{{ date('H:i') }}</span>
                     </div>
                 </div>
             </div>
@@ -145,24 +116,31 @@
 
         <!-- Content Area -->
         <div class="p-8">
-            <div class="max-w-7xl mx-auto">
-                @yield('content')
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="px-8 py-4 border-t border-white/20 bg-white/30 backdrop-blur-sm mt-auto">
-            <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <p class="text-sm text-gray-600">© 2024 Manajemen Dapur. All rights reserved.</p>
-                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                    <span>Made with</span>
-                    <i class="fa-solid fa-heart text-red-500"></i>
-                    <span>Laravel & TailwindCSS</span>
+            @if(session('success'))
+                <div class="max-w-7xl mx-auto mb-6">
+                    <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-check-circle mr-2"></i>
+                            {{ session('success') }}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </footer>
-    </main>
+            @endif
 
+            @if(session('error'))
+                <div class="max-w-7xl mx-auto mb-6">
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-exclamation-circle mr-2"></i>
+                            {{ session('error') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @yield('content')
+        </div>
+    </main>
 </div>
 
 <script>
@@ -173,12 +151,39 @@
             hour: '2-digit',
             minute: '2-digit'
         });
-        document.getElementById('current-time').textContent = timeString;
+        const dateString = now.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        const timeElement = document.getElementById('current-time');
+        const dateElement = document.getElementById('current-date');
+
+        if (timeElement) timeElement.textContent = timeString;
+        if (dateElement) dateElement.textContent = dateString;
     }
 
+    // Update time every minute
     updateTime();
-    setInterval(updateTime, 60000); // Update every minute
+    setInterval(updateTime, 60000);
+
+    // Auto-hide flash messages
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.bg-green-50, .bg-red-50');
+        alerts.forEach(function(alert) {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.remove();
+            }, 500);
+        });
+    }, 5000);
+
+
 </script>
+
+@stack('scripts')
 
 </body>
 </html>

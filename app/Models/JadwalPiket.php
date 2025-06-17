@@ -18,4 +18,10 @@ class JadwalPiket extends Model
     {
         return $this->belongsTo(KelompokPiket::class, 'kelompok_piket_id');
     }
+
+    public function menu()
+{
+    return $this->belongsTo(Menu::class, 'menu_id');
+}
+
 }

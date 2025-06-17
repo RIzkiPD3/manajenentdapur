@@ -14,10 +14,10 @@ class RequestNampanController extends Controller
      */
     public function create()
     {
-        // Ambil kelompok piket pertama yang tersedia atau berdasarkan logika tertentu
-        $kelompok = JadwalPiket::first()?->kelompok;
+        // Tidak perlu mengirim data kelompok ke view jika tidak digunakan
+        // Atau jika memang diperlukan, pastikan data yang dikirim sudah terformat dengan benar
 
-        return view('angkatan.request-nampan', compact('kelompok'));
+        return view('angkatan.request-nampan');
     }
 
     /**
@@ -56,8 +56,7 @@ class RequestNampanController extends Controller
     */
    public function riwayatSaya()
    {
-       $requests = RequestNampan::with('kelompok')
-           ->where('user_id', Auth::id())
+       $requests = RequestNampan::where('user_id', Auth::id())
            ->latest()
            ->get();
 
@@ -73,28 +72,12 @@ class RequestNampanController extends Controller
            ->latest()
            ->get();
 
-       return view('petugas.nampan.riwayat', compact('requests'));
-   }
+       // Hitung statistik untuk bulan ini
+       $thisMonthCount = RequestNampan::whereMonth('created_at', now()->month)
+           ->whereYear('created_at', now()->year)
+           ->count();
 
-   /**
-    * Update status request nampan (untuk petugas)
-    */
-   public function updateStatus(Request $request, $id)
-   {
-       $request->validate([
-           'status' => 'required|in:pending,approved,rejected',
-           'catatan_petugas' => 'nullable|string|max:500'
-       ]);
-
-       $requestNampan = RequestNampan::findOrFail($id);
-       $requestNampan->update([
-           'status' => $request->status,
-           'catatan_petugas' => $request->catatan_petugas,
-           'processed_at' => now(),
-           'processed_by' => Auth::id()
-       ]);
-
-       return redirect()->back()->with('success', 'Status request berhasil diperbarui.');
+       return view('petugas.nampan.riwayat', compact('requests', 'thisMonthCount'));
    }
 
    /**

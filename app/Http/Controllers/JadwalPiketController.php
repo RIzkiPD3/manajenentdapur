@@ -26,9 +26,9 @@ class JadwalPiketController extends Controller
      */
     public function create()
     {
-        $kelompokPikets = KelompokPiket::all();
+        $kelompok = KelompokPiket::all(); // Ubah dari null ke data kelompok
 
-        return view('admin.jadwal.create', compact('kelompokPikets'));
+        return view('admin.jadwal.create', compact('kelompok'));
     }
 
     /**

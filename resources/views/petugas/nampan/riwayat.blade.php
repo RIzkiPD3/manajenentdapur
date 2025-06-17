@@ -40,7 +40,7 @@
     @endif
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <!-- Total Requests -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between">
@@ -56,46 +56,31 @@
             </div>
         </div>
 
-        <!-- Approved Requests -->
+        <!-- Total Nampan Requested -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 mb-1">Disetujui</p>
-                    <p class="text-2xl font-bold text-green-600">{{ $requests->where('status', 'approved')->count() }}</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Total Nampan</p>
+                    <p class="text-2xl font-bold text-green-600">{{ $requests->sum('jumlah_nampan') }}</p>
                 </div>
                 <div class="p-3 bg-green-100 rounded-full">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <!-- Rejected Requests -->
+        <!-- This Month -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 mb-1">Ditolak</p>
-                    <p class="text-2xl font-bold text-red-600">{{ $requests->where('status', 'rejected')->count() }}</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Bulan Ini</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ $thisMonthCount }}</p>
                 </div>
-                <div class="p-3 bg-red-100 rounded-full">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Requests -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600 mb-1">Menunggu</p>
-                    <p class="text-2xl font-bold text-yellow-600">{{ $requests->where('status', 'pending')->count() }}</p>
-                </div>
-                <div class="p-3 bg-yellow-100 rounded-full">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                 </div>
             </div>
@@ -119,13 +104,13 @@
                 </div>
             </div>
             <div class="sm:w-48">
-                <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-2">Filter Status</label>
-                <select id="statusFilter"
+                <label for="dateFilter" class="block text-sm font-medium text-gray-700 mb-2">Filter Tanggal</label>
+                <select id="dateFilter"
                         class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
-                    <option value="">Semua Status</option>
-                    <option value="pending">Menunggu</option>
-                    <option value="approved">Disetujui</option>
-                    <option value="rejected">Ditolak</option>
+                    <option value="">Semua Tanggal</option>
+                    <option value="today">Hari Ini</option>
+                    <option value="week">Minggu Ini</option>
+                    <option value="month">Bulan Ini</option>
                 </select>
             </div>
         </div>
@@ -145,7 +130,6 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Santri</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan Petugas</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -154,8 +138,8 @@
                 <tbody class="bg-white divide-y divide-gray-200" id="requestTable">
                     @forelse($requests as $index => $request)
                         <tr class="hover:bg-gray-50 transition-colors duration-150 request-row"
-                            data-status="{{ $request->status }}"
-                            data-search="{{ strtolower($request->user->name . ' ' . ($request->keterangan ?? '')) }}">
+                            data-search="{{ strtolower($request->user->name . ' ' . ($request->keterangan ?? '')) }}"
+                            data-date="{{ $request->created_at->format('Y-m-d') }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {{ $index + 1 }}
                             </td>
@@ -186,30 +170,6 @@
                                 <div class="max-w-xs truncate" title="{{ $request->keterangan }}">
                                     {{ $request->keterangan ?: 'Tidak ada keterangan' }}
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($request->status === 'pending')
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Menunggu
-                                    </span>
-                                @elseif($request->status === 'approved')
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Disetujui
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Ditolak
-                                    </span>
-                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <div class="font-medium">{{ $request->created_at->format('d/m/Y') }}</div>
@@ -253,7 +213,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
                                     <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -296,21 +256,41 @@
 <script>
 // Filter functionality
 document.getElementById('searchInput').addEventListener('input', filterTable);
-document.getElementById('statusFilter').addEventListener('change', filterTable);
+document.getElementById('dateFilter').addEventListener('change', filterTable);
 
 function filterTable() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const statusFilter = document.getElementById('statusFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
     const rows = document.querySelectorAll('.request-row');
+
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    // Calculate week start (Monday)
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay() + 1);
+    const weekStartStr = weekStart.toISOString().split('T')[0];
+
+    // Calculate month start
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const monthStartStr = monthStart.toISOString().split('T')[0];
 
     rows.forEach(row => {
         const searchData = row.getAttribute('data-search');
-        const statusData = row.getAttribute('data-status');
+        const requestDate = row.getAttribute('data-date');
 
         const matchesSearch = searchData.includes(searchTerm);
-        const matchesStatus = statusFilter === '' || statusData === statusFilter;
 
-        row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+        let matchesDate = true;
+        if (dateFilter === 'today') {
+            matchesDate = requestDate === todayStr;
+        } else if (dateFilter === 'week') {
+            matchesDate = requestDate >= weekStartStr;
+        } else if (dateFilter === 'month') {
+            matchesDate = requestDate >= monthStartStr;
+        }
+
+        row.style.display = (matchesSearch && matchesDate) ? '' : 'none';
     });
 }
 
@@ -339,16 +319,6 @@ function openDetailModal(request) {
             minute: '2-digit'
         }) : null;
 
-    // Status styling
-    let statusBadge = '';
-    if (request.status === 'pending') {
-        statusBadge = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">Menunggu</span>';
-    } else if (request.status === 'approved') {
-        statusBadge = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">Disetujui</span>';
-    } else {
-        statusBadge = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200">Ditolak</span>';
-    }
-
     content.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4">
@@ -373,10 +343,6 @@ function openDetailModal(request) {
                         <div class="flex justify-between">
                             <span class="text-gray-600">Jumlah Nampan:</span>
                             <span class="font-medium">${request.jumlah_nampan} buah</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Status:</span>
-                            <span>${statusBadge}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Tanggal Request:</span>

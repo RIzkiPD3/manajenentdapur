@@ -1,267 +1,179 @@
 @extends('layouts.admin')
 
 @section('content')
-<!-- Hero Section -->
-<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
-    <!-- Header with animated background -->
-    <div class="relative overflow-hidden bg-white shadow-sm border-b border-gray-200">
-        <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5"></div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mb-4 shadow-lg">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h1 class="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                    Dashboard Admin
-                </h1>
-                <p class="text-lg text-gray-600">Selamat datang kembali, Admin</p>
-                <div class="mt-2 h-1 w-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mx-auto"></div>
-            </div>
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard Admin</h1>
+            <p class="text-gray-600">Kelola sistem jadwal makanan dengan mudah</p>
         </div>
-    </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <!-- Card 1 - Total Angkatan -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 group hover:border-blue-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Total Angkatan</p>
-                        <p class="text-2xl font-bold text-gray-900">12</p>
-                        <p class="text-xs text-blue-600 mt-1">Angkatan aktif</p>
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Angkatan Card -->
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-blue-100 p-3 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900">{{ $totalAngkatan }}</p>
+                            <p class="text-sm text-gray-500">Total Angkatan</p>
+                        </div>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 - Total Kelompok -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 group hover:border-green-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Total Kelompok</p>
-                        <p class="text-2xl font-bold text-gray-900">48</p>
-                        <p class="text-xs text-green-600 mt-1">Kelompok terdaftar</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 - Kelompok yang Bertugas -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 group hover:border-purple-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Kelompok Bertugas</p>
-                        <p class="text-2xl font-bold text-gray-900">6</p>
-                        <p class="text-xs text-purple-600 mt-1">Sedang bertugas hari ini</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4 - Menu Hari Ini -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 group hover:border-orange-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Menu Hari Ini</p>
-                        <p class="text-2xl font-bold text-gray-900">3</p>
-                        <p class="text-xs text-orange-600 mt-1">Menu tersedia</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a href="{{ route('admin.angkatan.create') }}" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
+                        Tambah Angkatan
+                    </a>
+                </div>
+            </div>
+
+            <!-- Total Kelompok Card -->
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-lg">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900">{{ $totalKelompok }}</p>
+                            <p class="text-sm text-gray-500">Total Kelompok</p>
+                        </div>
                     </div>
+                    <p class="text-sm text-gray-600">Kelompok aktif</p>
+                </div>
+            </div>
+
+            <!-- Total Menu Card -->
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-orange-100 p-3 rounded-lg">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900">{{ $totalMenu }}</p>
+                            <p class="text-sm text-gray-500">Total Menu</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600">Menu tersedia</p>
+                </div>
+            </div>
+
+            <!-- Total Sesi Absensi Card -->
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-purple-100 p-3 rounded-lg">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900">{{ $totalSesiAbsensi ?? 0 }}</p>
+                            <p class="text-sm text-gray-500">Sesi Absensi</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600">Sesi berlangsung</p>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                Quick Actions
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <button class="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 group border border-blue-100 hover:border-blue-200">
-                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        <!-- Today's Schedule Section -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="bg-blue-600 px-6 py-4 rounded-t-lg">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
+                        <h3 class="text-lg font-semibold text-white">Jadwal Hari Ini</h3>
                     </div>
-                    <span class="font-medium text-gray-700">Kelola Angkatan</span>
-                </button>
-
-                <button class="flex items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-all duration-300 group border border-green-100 hover:border-green-200">
-                    <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <span class="font-medium text-gray-700">Kelola Kelompok</span>
-                </button>
-
-                <button class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg hover:from-purple-100 hover:to-violet-100 transition-all duration-300 group border border-purple-100 hover:border-purple-200">
-                    <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                        </svg>
-                    </div>
-                    <span class="font-medium text-gray-700">Jadwal Tugas</span>
-                </button>
-
-                <button class="flex items-center p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg hover:from-orange-100 hover:to-red-100 transition-all duration-300 group border border-orange-100 hover:border-orange-200">
-                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                    </div>
-                    <span class="font-medium text-gray-700">Kelola Menu</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Enhanced Information Sections -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <!-- Kelompok Bertugas Hari Ini -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Kelompok Bertugas Hari Ini
-                </h3>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            <span class="text-sm font-medium text-gray-700">Kelompok A - Angkatan 2023</span>
-                        </div>
-                        <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">Sarapan</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span class="text-sm font-medium text-gray-700">Kelompok B - Angkatan 2022</span>
-                        </div>
-                        <span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Makan Siang</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span class="text-sm font-medium text-gray-700">Kelompok C - Angkatan 2024</span>
-                        </div>
-                        <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">Makan Malam</span>
-                    </div>
+                    <span class="bg-blue-500 text-white text-sm px-3 py-1 rounded-full">
+                        {{ date('d M Y') }}
+                    </span>
                 </div>
             </div>
 
-            <!-- Menu Hari Ini -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Menu Hari Ini
-                </h3>
-                <div class="space-y-4">
-                    <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-semibold text-gray-900">Sarapan</h4>
-                            <span class="text-xs text-yellow-600">07:00 - 09:00</span>
+            <div class="p-6">
+                @if ($jadwalHariIni)
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Kelompok Bertugas -->
+                        <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Kelompok Bertugas</h4>
+                                    <p class="text-lg font-semibold text-gray-800">{{ $jadwalHariIni->kelompok->nama_kelompok ?? '-' }}</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600">Nasi Gudeg, Telur, Tempe Bacem</p>
-                    </div>
-                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-semibold text-gray-900">Makan Siang</h4>
-                            <span class="text-xs text-blue-600">12:00 - 14:00</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Nasi Putih, Ayam Goreng, Sayur Asem</p>
-                    </div>
-                    <div class="p-4 bg-green-50 rounded-lg border border-green-200">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-semibold text-gray-900">Makan Malam</h4>
-                            <span class="text-xs text-green-600">18:00 - 20:00</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Nasi Putih, Ikan Bakar, Tahu Tempe</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Logout Section -->
-        <div class="text-center">
-            <div class="inline-block bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                <div class="mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                        </svg>
+                        <!-- Menu Hari Ini -->
+                        <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Menu Hari Ini</h4>
+                                    <p class="text-lg font-semibold text-gray-800">{{ optional($jadwalHariIni->menu)->nama_menu ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Ready to Sign Out?</h3>
-                    <p class="text-sm text-gray-600 mb-6">Terima kasih telah menggunakan dashboard admin</p>
-                </div>
 
-                <form action="{{ url('/logout') }}" method="POST" class="inline-block">
-                    @csrf
-                    <button type="submit" class="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
-                        <svg class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
-                        </svg>
-                        Sign Out
-                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-lg transition-opacity duration-200"></div>
-                    </button>
-                </form>
+                    <!-- Recipe Section -->
+                    @if(optional($jadwalHariIni->menu)->resep)
+                        <div class="mt-6 bg-orange-50 rounded-lg p-4 border border-orange-200">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-orange-100 p-2 rounded-lg mr-3">
+                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <h4 class="font-medium text-gray-900">Resep Makanan</h4>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-gray-200">
+                                <p class="whitespace-pre-line text-gray-700 text-sm leading-relaxed">
+                                    {{ optional($jadwalHariIni->menu)->resep }}
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <!-- Empty State -->
+                    <div class="text-center py-12">
+                        <div class="bg-gray-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Jadwal</h4>
+                        <p class="text-gray-500 mb-4">Belum ada jadwal yang ditetapkan untuk hari ini.</p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+                            Tambah Jadwal
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
-
-<style>
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: .8;
-    }
-}
-
-.animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-</style>
 @endsection

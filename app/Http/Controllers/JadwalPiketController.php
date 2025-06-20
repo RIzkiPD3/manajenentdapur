@@ -6,132 +6,58 @@ use App\Models\JadwalPiket;
 use App\Models\KelompokPiket;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 
 class JadwalPiketController extends Controller
 {
     /**
-     * Tampilkan daftar semua jadwal piket, urut berdasarkan hari dalam seminggu.
+     * Display a listing of the resource (untuk admin).
      */
     public function index()
     {
-        $jadwals = JadwalPiket::with('kelompok')
-            ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
-            ->get();
+        $jadwal = JadwalPiket::with('kelompok')->get();
 
-        return view('admin.jadwal.index', compact('jadwals'));
-    }
+        $events = $jadwal->map(function ($item) {
+            return [
+                'title' => 'Kelompok: ' . ($item->kelompok->nama_kelompok ?? 'N/A'),
+                'start' => $item->tanggal, // pastikan ini bertipe YYYY-MM-DD
+                'allDay' => true
+            ];
+        });
 
-    /**
-     * Tampilkan form untuk membuat jadwal baru.
-     */
-    public function create()
-    {
-        $kelompok = KelompokPiket::all(); // Ubah dari null ke data kelompok
-
-        return view('admin.jadwal.create', compact('kelompok'));
-    }
-
-    /**
-     * Simpan jadwal baru.
-     */
-    public function store(Request $request)
-    {
-        // Debug: Cek nilai yang diterima
-        \Log::info('Data yang diterima:', $request->all());
-
-        $validated = $request->validate([
-            'kelompok_piket_id' => 'required|exists:kelompok_pikets,id',
-            'hari' => 'required|in:senin,selasa,rabu,kamis,jumat,sabtu,minggu',
-        ], [
-            'hari.required' => 'Pilih hari terlebih dahulu.',
-            'hari.in' => 'Hari yang dipilih tidak valid. Pilih salah satu hari.',
-            'kelompok_piket_id.required' => 'Pilih kelompok piket terlebih dahulu.',
-            'kelompok_piket_id.exists' => 'Kelompok piket yang dipilih tidak valid.',
+        return view('admin.jadwal.index', [
+            'events' => $events
         ]);
-
-        // Cek apakah jadwal untuk hari dan kelompok sudah ada
-        $existingJadwal = JadwalPiket::where('kelompok_piket_id', $validated['kelompok_piket_id'])
-            ->where('hari', ucfirst($validated['hari']))
-            ->first();
-
-        if ($existingJadwal) {
-            return back()->withErrors(['hari' => 'Jadwal untuk kelompok ini pada hari tersebut sudah ada.'])
-                        ->withInput();
-        }
-
-        // Konversi hari ke format yang sesuai untuk database (huruf besar di awal)
-        $validated['hari'] = ucfirst($validated['hari']); // senin -> Senin
-
-        // Simpan ke database
-        JadwalPiket::create($validated);
-
-        return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
     }
-
     /**
-     * Tampilkan form edit jadwal.
-     */
-    public function edit(JadwalPiket $jadwal)
-    {
-        $kelompokPikets = KelompokPiket::all();
-
-        return view('admin.jadwal.edit', compact('jadwal', 'kelompokPikets'));
-    }
-
-    /**
-     * Perbarui jadwal.
-     */
-    public function update(Request $request, JadwalPiket $jadwal)
-    {
-        // Debug: Cek nilai yang diterima
-        \Log::info('Data update yang diterima:', $request->all());
-
-        $validated = $request->validate([
-            'kelompok_piket_id' => 'required|exists:kelompok_pikets,id',
-            'hari' => 'required|in:senin,selasa,rabu,kamis,jumat,sabtu,minggu',
-        ], [
-            'hari.required' => 'Pilih hari terlebih dahulu.',
-            'hari.in' => 'Hari yang dipilih tidak valid. Pilih salah satu hari.',
-            'kelompok_piket_id.required' => 'Pilih kelompok piket terlebih dahulu.',
-            'kelompok_piket_id.exists' => 'Kelompok piket yang dipilih tidak valid.',
-        ]);
-
-        // Cek apakah jadwal untuk hari dan kelompok sudah ada (kecuali untuk data yang sedang diedit)
-        $existingJadwal = JadwalPiket::where('kelompok_piket_id', $validated['kelompok_piket_id'])
-            ->where('hari', ucfirst($validated['hari']))
-            ->where('id', '!=', $jadwal->id)
-            ->first();
-
-        if ($existingJadwal) {
-            return back()->withErrors(['hari' => 'Jadwal untuk kelompok ini pada hari tersebut sudah ada.'])
-                        ->withInput();
-        }
-
-        // Konversi hari ke format yang sesuai untuk database
-        $validated['hari'] = ucfirst($validated['hari']); // senin -> Senin
-
-        // Update data
-        $jadwal->update($validated);
-
-        return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
-    }
-
-    /**
-     * Hapus jadwal.
-     */
-    public function destroy(JadwalPiket $jadwal)
-    {
-        $jadwal->delete();
-
-        return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil dihapus.');
-    }
-
-    /**
-     * Tampilkan jadwal untuk petugas
+     * Display jadwal untuk petugas
      */
     public function jadwalPetugas()
     {
-        // Ambil hari ini dalam bahasa Indonesia
+        $hari = Carbon::now()->translatedFormat('l, d F Y');
+        $jadwalHariIni = self::getJadwalHariIni();
+        $kelompok = $jadwalHariIni ? $jadwalHariIni->kelompok : null;
+        $message = null;
+
+        if (!$kelompok) {
+            $kelompokCount = KelompokPiket::count();
+            if ($kelompokCount == 0) {
+                $message = 'Belum ada kelompok piket yang terdaftar. Silakan hubungi admin untuk mengatur jadwal.';
+            } else {
+                $message = 'Tidak ada jadwal piket untuk hari ini. Silakan hubungi admin untuk mengatur jadwal.';
+            }
+        }
+
+        return view('petugas.jadwal.index', compact('hari', 'kelompok', 'message'));
+    }
+
+    /**
+     * Get jadwal untuk hari ini - Method utama untuk mendapatkan jadwal
+     */
+    public static function getJadwalHariIni()
+    {
+        $hariInggris = Carbon::now()->format('l');
         $hariMapping = [
             'Sunday' => 'Minggu',
             'Monday' => 'Senin',
@@ -142,89 +68,204 @@ class JadwalPiketController extends Controller
             'Saturday' => 'Sabtu'
         ];
 
-        $hariInggris = Carbon::now()->format('l');
-        $hariIni = $hariMapping[$hariInggris];
+        $hariIndonesia = $hariMapping[$hariInggris];
 
-        // Untuk konsistensi dengan view yang menggunakan $hari
-        $hari = $hariIni;
-
-        // Ambil semua jadwal dengan relasi kelompok
-        $jadwals = JadwalPiket::with('kelompok')
-            ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
-            ->get();
-
-        // Ambil jadwal untuk hari ini (gunakan first() karena view mengharapkan single object)
+        // Prioritas 1: Jadwal rolling yang sudah di-generate untuk hari ini
         $jadwalHariIni = JadwalPiket::with('kelompok')
-            ->where('hari', $hariIni)
+            ->where('hari', $hariIndonesia)
+            ->whereDate('tanggal', Carbon::today())
             ->first();
 
-        // Set variabel kelompok dan message sesuai kebutuhan view
-        $kelompok = null;
-        $message = null;
-
         if ($jadwalHariIni && $jadwalHariIni->kelompok) {
-            $kelompok = $jadwalHariIni->kelompok;
-        } else {
-            $message = 'Tidak ada jadwal piket untuk hari ini (' . $hariIni . ').';
+            return $jadwalHariIni;
         }
 
-        // Ambil semua kelompok piket untuk referensi
-        $kelompokPikets = KelompokPiket::all();
+        // Prioritas 2: Jadwal berdasarkan hari saja (template jadwal)
+        $jadwalByHari = JadwalPiket::with('kelompok')
+            ->where('hari', $hariIndonesia)
+            ->whereNull('tanggal')
+            ->first();
 
-        return view('petugas.jadwal.index', compact(
-            'jadwals',
-            'jadwalHariIni',
-            'hariIni',
-            'hari',          // Variabel yang dibutuhkan view
-            'kelompok',      // Single kelompok object
-            'message',       // Pesan jika tidak ada jadwal
-            'kelompokPikets'
-        ));
+        if ($jadwalByHari && $jadwalByHari->kelompok) {
+            return $jadwalByHari;
+        }
+
+        // Prioritas 3: Sistem fallback otomatis berdasarkan rotasi kelompok
+        $kelompokList = KelompokPiket::orderBy('urutan')->get();
+
+        if ($kelompokList->count() > 0) {
+            $dayOfWeek = Carbon::now()->dayOfWeek;
+            $index = $dayOfWeek % $kelompokList->count();
+            $kelompok = $kelompokList[$index];
+
+            $jadwalFallback = new JadwalPiket();
+            $jadwalFallback->hari = $hariIndonesia;
+            $jadwalFallback->tanggal = Carbon::today();
+            $jadwalFallback->kelompok = $kelompok;
+            $jadwalFallback->kelompok_piket_id = $kelompok->id; // FIXED
+
+            return $jadwalFallback;
+        }
+
+        return null;
     }
 
     /**
-     * Tampilkan jadwal berdasarkan hari tertentu
+     * Show the form for creating a new resource.
      */
-    public function jadwalByHari($hari)
+    public function create()
     {
-        $validHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-
-        if (!in_array($hari, $validHari)) {
-            abort(404, 'Hari tidak valid');
-        }
-
-        $jadwals = JadwalPiket::with('kelompok')
-            ->where('hari', $hari)
-            ->get();
-
-        return view('petugas.jadwal.by-hari', compact('jadwals', 'hari'));
+        $kelompokList = KelompokPiket::orderBy('urutan')->get();
+        return view('admin.jadwal.create', compact('kelompokList'));
     }
 
     /**
-     * Tandai tugas piket sebagai selesai (untuk endpoint AJAX)
+     * Store a newly created resource in storage.
      */
-    public function tandaiSelesai(Request $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'kelompok_piket_id' => 'required|exists:kelompok_pikets,id', // FIXED
+            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+            'tanggal' => 'nullable|date',
+        ]);
+
+        JadwalPiket::create([
+            'kelompok_piket_id' => $request->kelompok_piket_id, // FIXED
+            'hari' => $request->hari,
+            'tanggal' => $request->tanggal,
+        ]);
+
+        return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $jadwal = JadwalPiket::with('kelompok')->findOrFail($id);
+        $kelompokList = KelompokPiket::orderBy('urutan')->get();
+
+        return view('admin.jadwal.edit', compact('jadwal', 'kelompokList'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'kelompok_piket_id' => 'required|exists:kelompok_pikets,id', // FIXED
+            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+            'tanggal' => 'nullable|date',
+        ]);
+
+        $jadwal = JadwalPiket::findOrFail($id);
+        $jadwal->update([
+            'kelompok_piket_id' => $request->kelompok_piket_id, // FIXED
+            'hari' => $request->hari,
+            'tanggal' => $request->tanggal,
+        ]);
+
+        return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $jadwal = JadwalPiket::findOrFail($id);
+        $jadwal->delete();
+
+        return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil dihapus.');
+    }
+
+    /**
+     * Form untuk generate rolling jadwal
+     */
+    public function generateForm()
+    {
+        return view('admin.jadwal.generate');
+    }
+
+
+    /**
+ * Method untuk generate jadwal rolling (untuk admin)
+ */
+public function generateRolling(Request $request)
+{
+    $request->validate([
+        'tanggal_mulai' => 'required|date',
+        'jumlah_hari' => 'required|integer|min:1|max:365'
+    ]);
+
+    $tanggalMulai = Carbon::parse($request->tanggal_mulai);
+    $jumlahHari = $request->jumlah_hari;
+    $kelompokList = KelompokPiket::orderBy('urutan')->get();
+
+    if ($kelompokList->count() == 0) {
+        return back()->with('error', 'Belum ada kelompok piket yang tersedia.');
+    }
+
+    // Hapus jadwal lama yang akan di-replace
+    JadwalPiket::whereBetween('tanggal', [
+        $tanggalMulai,
+        $tanggalMulai->copy()->addDays($jumlahHari - 1)
+    ])->delete();
+
+    // Generate jadwal baru
+    for ($i = 0; $i < $jumlahHari; $i++) {
+        $tanggal = $tanggalMulai->copy()->addDays($i);
+        $hariInggris = $tanggal->format('l');
+
+        $hariMapping = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu'
+        ];
+
+        $hariIndonesia = $hariMapping[$hariInggris];
+
+        // Rotasi kelompok berdasarkan nomor hari
+        $kelompokIndex = $i % $kelompokList->count();
+        $kelompok = $kelompokList[$kelompokIndex];
+
+        // Pastikan kelompok valid sebelum membuat jadwal
+        if (!$kelompok || !$kelompok->id) {
+            continue;
+        }
+
         try {
-            $validated = $request->validate([
-                'kelompok_id' => 'required|exists:kelompok_pikets,id',
-                'tanggal' => 'required|date',
-                'catatan' => 'nullable|string'
+            JadwalPiket::create([
+                'kelompok_piket_id' => $kelompok->id,
+                'hari' => $hariIndonesia,
+                'tanggal' => $tanggal
             ]);
-
-            // Logic untuk menyimpan data penyelesaian tugas
-            // Sesuaikan dengan model yang Anda gunakan untuk tracking penyelesaian tugas
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tugas piket berhasil ditandai sebagai selesai!'
-            ]);
-
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+            return back()->with('error', 'Error saat membuat jadwal: ' . $e->getMessage());
         }
+    }
+
+    return redirect()->route('admin.jadwal.index')
+        ->with('success', "Jadwal rolling berhasil di-generate untuk {$jumlahHari} hari ke depan.");
+}
+    /**
+     * Get jadwal untuk dashboard dengan informasi tambahan
+     */
+    public static function getJadwalDashboard()
+    {
+        $jadwalHariIni = self::getJadwalHariIni();
+
+        return [
+            'jadwal_hari_ini' => $jadwalHariIni,
+            'total_kelompok' => KelompokPiket::count(),
+            'kelompok_aktif_hari_ini' => $jadwalHariIni ? $jadwalHariIni->kelompok : null
+        ];
     }
 }

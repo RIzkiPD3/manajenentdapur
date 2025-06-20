@@ -37,9 +37,35 @@
                     </label>
                     <input type="text"
                            name="nama_kelompok"
+                           value="{{ old('nama_kelompok') }}"
                            required
                            placeholder="Masukkan nama kelompok..."
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none hover:border-gray-300">
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none hover:border-gray-300 @error('nama_kelompok') border-red-500 @enderror">
+                    @error('nama_kelompok')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Urutan -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <span class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                            </svg>
+                            Urutan
+                        </span>
+                    </label>
+                    <input type="number"
+                           name="urutan"
+                           value="{{ old('urutan') }}"
+                           required
+                           min="1"
+                           placeholder="Masukkan urutan kelompok..."
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none hover:border-gray-300 @error('urutan') border-red-500 @enderror">
+                    @error('urutan')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Anggota Section -->
@@ -61,6 +87,7 @@
                             </div>
                             <input type="text"
                                    name="anggota[]"
+                                   value="{{ old('anggota.0') }}"
                                    placeholder="Nama anggota..."
                                    required
                                    class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all outline-none">
@@ -72,7 +99,36 @@
                                 </svg>
                             </button>
                         </div>
+
+                        @if(old('anggota'))
+                            @foreach(old('anggota') as $index => $anggota)
+                                @if($index > 0)
+                                    <div class="anggota-item flex items-center space-x-3 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-300 transition-colors">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <span class="text-sm font-semibold text-blue-600 member-number">{{ $index + 1 }}</span>
+                                        </div>
+                                        <input type="text"
+                                               name="anggota[]"
+                                               value="{{ $anggota }}"
+                                               placeholder="Nama anggota..."
+                                               required
+                                               class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all outline-none">
+                                        <button type="button"
+                                                class="remove-member flex-shrink-0 w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center transition-colors"
+                                                onclick="removeMember(this)">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
+
+                    @error('anggota')
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
 
                     <!-- Add Member Button -->
                     <button type="button"
@@ -113,7 +169,7 @@
 </div>
 
 <script>
-let memberCount = 1;
+let memberCount = document.querySelectorAll('.anggota-item').length;
 
 function addMember() {
     memberCount++;
@@ -211,7 +267,9 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Initialize
-updateRemoveButtons();
+document.addEventListener('DOMContentLoaded', function() {
+    updateRemoveButtons();
+});
 </script>
 
 @endsection

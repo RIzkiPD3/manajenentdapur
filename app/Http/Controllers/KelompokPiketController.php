@@ -12,7 +12,7 @@ class KelompokPiketController extends Controller
      */
     public function index()
     {
-        $kelompokList = KelompokPiket::latest()->get(); // ✅ Ubah nama variable
+        $kelompokList = KelompokPiket::orderBy('urutan')->get();
         return view('admin.kelompok.index', compact('kelompokList'));
     }
 
@@ -31,28 +31,24 @@ class KelompokPiketController extends Controller
     {
         $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
-            'anggota' => 'required|array|min:1',
-            'anggota.*' => 'required|string|max:255',
+            'anggota'       => 'required|array|min:1', // Ubah ke array
+            'anggota.*'     => 'required|string|max:255', // Validasi setiap anggota
+            'urutan'        => 'required|integer|unique:kelompok_pikets,urutan'
         ]);
 
-        // Filter anggota yang kosong dan trim whitespace
-        $anggotaArray = array_filter(
-            array_map('trim', $validated['anggota']),
-            function($anggota) {
-                return !empty($anggota);
-            }
-        );
+        // Hapus spasi kosong dari setiap anggota
+        $anggotaArray = array_map('trim', $validated['anggota']);
+        $anggotaArray = array_filter($anggotaArray); // Hapus anggota kosong
 
         KelompokPiket::create([
             'nama_kelompok' => $validated['nama_kelompok'],
-            'anggota' => array_values($anggotaArray)
+            'anggota'       => $anggotaArray,
+            'urutan'        => $validated['urutan']
         ]);
 
         return redirect()->route('admin.kelompok.index')
-                       ->with('success', 'Kelompok berhasil ditambahkan.');
+                        ->with('success', 'Kelompok berhasil ditambahkan.');
     }
-
-
 
     /**
      * Menampilkan form edit kelompok.
@@ -69,25 +65,23 @@ class KelompokPiketController extends Controller
     {
         $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
-            'anggota' => 'required|array|min:1',
-            'anggota.*' => 'required|string|max:255',
+            'anggota'       => 'required|array|min:1', // Ubah ke array
+            'anggota.*'     => 'required|string|max:255', // Validasi setiap anggota
+            'urutan'        => 'required|integer|unique:kelompok_pikets,urutan,' . $kelompok->id
         ]);
 
-        // Filter anggota yang kosong dan trim whitespace
-        $anggotaArray = array_filter(
-            array_map('trim', $validated['anggota']),
-            function($anggota) {
-                return !empty($anggota);
-            }
-        );
+        // Hapus spasi kosong dari setiap anggota
+        $anggotaArray = array_map('trim', $validated['anggota']);
+        $anggotaArray = array_filter($anggotaArray); // Hapus anggota kosong
 
         $kelompok->update([
             'nama_kelompok' => $validated['nama_kelompok'],
-            'anggota' => array_values($anggotaArray)
+            'anggota'       => $anggotaArray,
+            'urutan'        => $validated['urutan']
         ]);
 
         return redirect()->route('admin.kelompok.index')
-                       ->with('success', 'Kelompok berhasil diperbarui.');
+                        ->with('success', 'Kelompok berhasil diperbarui.');
     }
 
     /**
@@ -97,6 +91,6 @@ class KelompokPiketController extends Controller
     {
         $kelompok->delete();
         return redirect()->route('admin.kelompok.index')
-                       ->with('success', 'Kelompok berhasil dihapus.');
+                        ->with('success', 'Kelompok berhasil dihapus.');
     }
 }

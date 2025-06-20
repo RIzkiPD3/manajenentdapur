@@ -59,19 +59,10 @@
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Jadwal Hari Ini</p>
                         @php
-                            $hariMapping = [
-                                'Sunday' => 'Minggu',
-                                'Monday' => 'Senin',
-                                'Tuesday' => 'Selasa',
-                                'Wednesday' => 'Rabu',
-                                'Thursday' => 'Kamis',
-                                'Friday' => 'Jumat',
-                                'Saturday' => 'Sabtu'
-                            ];
-                            $hariIni = $hariMapping[\Carbon\Carbon::now()->format('l')];
-                            $jadwalHariIni = \App\Models\JadwalPiket::with('kelompok')->where('hari', $hariIni)->first();
+                            // Gunakan method dari controller untuk konsistensi
+                            $jadwalHariIni = \App\Http\Controllers\JadwalPiketController::getJadwalHariIni();
                         @endphp
-                        @if($jadwalHariIni)
+                        @if($jadwalHariIni && $jadwalHariIni->kelompok)
                             <p class="text-lg font-bold text-gray-900">{{ $jadwalHariIni->kelompok->nama_kelompok }}</p>
                         @else
                             <p class="text-lg font-bold text-gray-400">Tidak ada jadwal</p>
@@ -93,23 +84,33 @@
                 </div>
 
                 @php
-                    $jadwalMingguIni = \App\Models\JadwalPiket::with('kelompok')
-                        ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
-                        ->take(7)
-                        ->get();
+                    // Gunakan method dari controller untuk konsistensi
+                    $jadwalMingguIni = \App\Http\Controllers\JadwalPiketController::getJadwalMingguIni();
+
+                    // Ambil hari saat ini untuk highlighting
+                    $hariMapping = [
+                        'Sunday' => 'Minggu',
+                        'Monday' => 'Senin',
+                        'Tuesday' => 'Selasa',
+                        'Wednesday' => 'Rabu',
+                        'Thursday' => 'Kamis',
+                        'Friday' => 'Jumat',
+                        'Saturday' => 'Sabtu'
+                    ];
+                    $hariIni = $hariMapping[\Carbon\Carbon::now()->format('l')];
                 @endphp
 
                 <div class="space-y-3">
                     @forelse($jadwalMingguIni as $jadwal)
-                        <div class="flex items-center justify-between p-3 rounded-lg {{ $jadwal->hari == $hariIni ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50' }}">
+                        <div class="flex items-center justify-between p-3 rounded-lg {{ $jadwal && $jadwal->hari == $hariIni ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50' }}">
                             <div class="flex items-center space-x-3">
-                                <div class="w-2 h-2 rounded-full {{ $jadwal->hari == $hariIni ? 'bg-blue-500' : 'bg-gray-400' }}"></div>
-                                <span class="font-medium {{ $jadwal->hari == $hariIni ? 'text-blue-900' : 'text-gray-700' }}">
-                                    {{ $jadwal->hari }}
+                                <div class="w-2 h-2 rounded-full {{ $jadwal && $jadwal->hari == $hariIni ? 'bg-blue-500' : 'bg-gray-400' }}"></div>
+                                <span class="font-medium {{ $jadwal && $jadwal->hari == $hariIni ? 'text-blue-900' : 'text-gray-700' }}">
+                                    {{ $jadwal ? $jadwal->hari : 'N/A' }}
                                 </span>
                             </div>
-                            <span class="text-sm {{ $jadwal->hari == $hariIni ? 'text-blue-700 font-semibold' : 'text-gray-600' }}">
-                                {{ $jadwal->kelompok->nama_kelompok }}
+                            <span class="text-sm {{ $jadwal && $jadwal->hari == $hariIni ? 'text-blue-700 font-semibold' : 'text-gray-600' }}">
+                                {{ $jadwal && $jadwal->kelompok ? $jadwal->kelompok->nama_kelompok : 'Tidak ada jadwal' }}
                             </span>
                         </div>
                     @empty

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
     public function index()
     {
-        $menus = Menu::latest()->paginate(10);
+        $menus = Menu::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.menus.index', compact('menus'));
     }
 
@@ -21,14 +22,17 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_menu' => 'required|string|max:255',
-            'resep' => 'required|string',
+            'name' => 'required|string|max:255',
+            'sesi' => 'required|string|in:pagi,siang,malam',
         ]);
 
-        Menu::create($validated);
+        Menu::create([
+            'nama_menu' => $validated['name'],
+            'sesi' => $validated['sesi'],
+            'tanggal' => now()->format('Y-m-d'),
+        ]);
 
-        return redirect()->route('admin.menus.index')
-            ->with('success', 'Menu berhasil ditambahkan.');
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil ditambahkan.');
     }
 
     public function show(Menu $menu)
@@ -44,21 +48,22 @@ class MenuController extends Controller
     public function update(Request $request, Menu $menu)
     {
         $validated = $request->validate([
-            'nama_menu' => 'required|string|max:255',
-            'resep' => 'required|string', // Fixed: changed from 'bahan' to 'resep'
+            'name' => 'required|string|max:255',
+            'sesi' => 'required|string|in:pagi,siang,malam',
         ]);
 
-        $menu->update($validated);
+        $menu->update([
+            'nama_menu' => $validated['name'],
+            'sesi' => $validated['sesi'],
+            'tanggal' => $menu->tanggal ?? now()->format('Y-m-d'),
+        ]);
 
-        return redirect()->route('admin.menus.index')
-            ->with('success', 'Menu berhasil diperbarui.');
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
 
     public function destroy(Menu $menu)
     {
         $menu->delete();
-
-        return redirect()->route('admin.menus.index')
-            ->with('success', 'Menu berhasil dihapus.');
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil dihapus.');
     }
 }

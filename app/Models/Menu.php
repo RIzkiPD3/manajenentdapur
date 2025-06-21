@@ -9,12 +9,11 @@ class Menu extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_menu', 'resep'];
+    protected $fillable = ['nama_menu', 'sesi', 'tanggal'];
 
     protected $casts = [
+        'tanggal' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-}
-
+};

@@ -26,7 +26,7 @@
             </div>
         @else
             <!-- Main Card -->
-            <div class="bg-white rounded-lg shadow-sm border">
+            <div class="bg-white rounded-lg shadow-sm border mb-6">
                 <!-- Header -->
                 <div class="bg-blue-500 px-6 py-4 rounded-t-lg">
                     <h2 class="text-xl font-semibold text-white">{{ $kelompok->nama_kelompok ?? 'Tidak Ada Kelompok' }}</h2>
@@ -83,6 +83,59 @@
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
                             Aktif
                         </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Hari Ini Card -->
+            <div class="bg-white rounded-lg shadow-sm border">
+                <!-- Header -->
+                <div class="bg-orange-500 px-6 py-4 rounded-t-lg">
+                    <h2 class="text-xl font-semibold text-white">Menu Hari Ini</h2>
+                    <p class="text-orange-100 text-sm">Daftar Menu yang Tersedia</p>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6">
+                    @if($menuHariIni && $menuHariIni->count() > 0)
+                        <div class="space-y-4">
+                            @foreach($menuHariIni as $menu)
+                                <div class="flex items-center p-4 bg-orange-50 rounded-lg border border-orange-100">
+                                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-gray-900">{{ $menu->nama_menu }}</h4>
+                                        <p class="text-sm text-gray-600">{{ ucfirst($menu->sesi) }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-700">
+                                            {{ ucfirst($menu->sesi) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-2">Belum Ada Menu</h3>
+                            <p class="text-gray-500">Belum ada menu yang diatur untuk hari ini.</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-gray-50 px-6 py-3 rounded-b-lg border-t">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Menu untuk: {{ now()->format('d M Y') }}</span>
+                        <span class="text-gray-500">{{ $menuHariIni ? $menuHariIni->count() : 0 }} item</span>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalPiket;
 use App\Models\KelompokPiket;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -30,6 +31,7 @@ class JadwalPiketController extends Controller
             'events' => $events
         ]);
     }
+
     /**
      * Display jadwal untuk petugas
      */
@@ -49,7 +51,12 @@ class JadwalPiketController extends Controller
             }
         }
 
-        return view('petugas.jadwal.index', compact('hari', 'kelompok', 'message'));
+        // Ambil menu hari ini
+        $menuHariIni = Menu::whereDate('tanggal', Carbon::today())
+            ->orderBy('sesi', 'asc')
+            ->get();
+
+        return view('petugas.jadwal.index', compact('hari', 'kelompok', 'message', 'menuHariIni'));
     }
 
     /**
@@ -105,6 +112,123 @@ class JadwalPiketController extends Controller
             $jadwalFallback->kelompok_piket_id = $kelompok->id; // FIXED
 
             return $jadwalFallback;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get jadwal untuk minggu ini - Method yang hilang
+     */
+    public static function getJadwalMingguIni()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek(); // Senin
+        $endOfWeek = Carbon::now()->endOfWeek(); // Minggu
+
+        // Ambil jadwal yang sudah di-generate untuk minggu ini
+        $jadwalMingguIni = JadwalPiket::with('kelompok')
+            ->whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
+        // Jika tidak ada jadwal yang di-generate, buat jadwal fallback
+        if ($jadwalMingguIni->isEmpty()) {
+            $kelompokList = KelompokPiket::orderBy('urutan')->get();
+
+            if ($kelompokList->count() > 0) {
+                $jadwalFallback = collect();
+
+                // Generate jadwal untuk 7 hari ke depan mulai dari hari Senin
+                for ($i = 0; $i < 7; $i++) {
+                    $tanggal = $startOfWeek->copy()->addDays($i);
+                    $hariInggris = $tanggal->format('l');
+
+                    $hariMapping = [
+                        'Sunday' => 'Minggu',
+                        'Monday' => 'Senin',
+                        'Tuesday' => 'Selasa',
+                        'Wednesday' => 'Rabu',
+                        'Thursday' => 'Kamis',
+                        'Friday' => 'Jumat',
+                        'Saturday' => 'Sabtu'
+                    ];
+
+                    $hariIndonesia = $hariMapping[$hariInggris];
+
+                    // Rotasi kelompok berdasarkan hari
+                    $kelompokIndex = $i % $kelompokList->count();
+                    $kelompok = $kelompokList[$kelompokIndex];
+
+                    $jadwalTemp = new JadwalPiket();
+                    $jadwalTemp->hari = $hariIndonesia;
+                    $jadwalTemp->tanggal = $tanggal;
+                    $jadwalTemp->kelompok = $kelompok;
+                    $jadwalTemp->kelompok_piket_id = $kelompok->id;
+
+                    $jadwalFallback->push($jadwalTemp);
+                }
+
+                return $jadwalFallback;
+            }
+        }
+
+        return $jadwalMingguIni;
+    }
+
+    /**
+     * Get jadwal untuk bulan ini
+     */
+    public static function getJadwalBulanIni()
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        $jadwalBulanIni = JadwalPiket::with('kelompok')
+            ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
+        return $jadwalBulanIni;
+    }
+
+    /**
+     * Get jadwal untuk hari tertentu
+     */
+    public static function getJadwalByDate($tanggal)
+    {
+        $date = Carbon::parse($tanggal);
+        $hariInggris = $date->format('l');
+
+        $hariMapping = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu'
+        ];
+
+        $hariIndonesia = $hariMapping[$hariInggris];
+
+        // Cari jadwal spesifik untuk tanggal tersebut
+        $jadwal = JadwalPiket::with('kelompok')
+            ->where('hari', $hariIndonesia)
+            ->whereDate('tanggal', $date)
+            ->first();
+
+        if ($jadwal && $jadwal->kelompok) {
+            return $jadwal;
+        }
+
+        // Fallback ke jadwal template berdasarkan hari
+        $jadwalTemplate = JadwalPiket::with('kelompok')
+            ->where('hari', $hariIndonesia)
+            ->whereNull('tanggal')
+            ->first();
+
+        if ($jadwalTemplate && $jadwalTemplate->kelompok) {
+            return $jadwalTemplate;
         }
 
         return null;
@@ -190,82 +314,112 @@ class JadwalPiketController extends Controller
         return view('admin.jadwal.generate');
     }
 
-
     /**
- * Method untuk generate jadwal rolling (untuk admin)
- */
-public function generateRolling(Request $request)
-{
-    $request->validate([
-        'tanggal_mulai' => 'required|date',
-        'jumlah_hari' => 'required|integer|min:1|max:365'
-    ]);
+     * Method untuk generate jadwal rolling (untuk admin)
+     */
+    public function generateRolling(Request $request)
+    {
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'jumlah_hari' => 'required|integer|min:1|max:365'
+        ]);
 
-    $tanggalMulai = Carbon::parse($request->tanggal_mulai);
-    $jumlahHari = $request->jumlah_hari;
-    $kelompokList = KelompokPiket::orderBy('urutan')->get();
+        $tanggalMulai = Carbon::parse($request->tanggal_mulai);
+        $jumlahHari = $request->jumlah_hari;
+        $kelompokList = KelompokPiket::orderBy('urutan')->get();
 
-    if ($kelompokList->count() == 0) {
-        return back()->with('error', 'Belum ada kelompok piket yang tersedia.');
-    }
-
-    // Hapus jadwal lama yang akan di-replace
-    JadwalPiket::whereBetween('tanggal', [
-        $tanggalMulai,
-        $tanggalMulai->copy()->addDays($jumlahHari - 1)
-    ])->delete();
-
-    // Generate jadwal baru
-    for ($i = 0; $i < $jumlahHari; $i++) {
-        $tanggal = $tanggalMulai->copy()->addDays($i);
-        $hariInggris = $tanggal->format('l');
-
-        $hariMapping = [
-            'Sunday' => 'Minggu',
-            'Monday' => 'Senin',
-            'Tuesday' => 'Selasa',
-            'Wednesday' => 'Rabu',
-            'Thursday' => 'Kamis',
-            'Friday' => 'Jumat',
-            'Saturday' => 'Sabtu'
-        ];
-
-        $hariIndonesia = $hariMapping[$hariInggris];
-
-        // Rotasi kelompok berdasarkan nomor hari
-        $kelompokIndex = $i % $kelompokList->count();
-        $kelompok = $kelompokList[$kelompokIndex];
-
-        // Pastikan kelompok valid sebelum membuat jadwal
-        if (!$kelompok || !$kelompok->id) {
-            continue;
+        if ($kelompokList->count() == 0) {
+            return back()->with('error', 'Belum ada kelompok piket yang tersedia.');
         }
 
-        try {
-            JadwalPiket::create([
-                'kelompok_piket_id' => $kelompok->id,
-                'hari' => $hariIndonesia,
-                'tanggal' => $tanggal
-            ]);
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error saat membuat jadwal: ' . $e->getMessage());
+        // Hapus jadwal lama yang akan di-replace
+        JadwalPiket::whereBetween('tanggal', [
+            $tanggalMulai,
+            $tanggalMulai->copy()->addDays($jumlahHari - 1)
+        ])->delete();
+
+        // Generate jadwal baru
+        for ($i = 0; $i < $jumlahHari; $i++) {
+            $tanggal = $tanggalMulai->copy()->addDays($i);
+            $hariInggris = $tanggal->format('l');
+
+            $hariMapping = [
+                'Sunday' => 'Minggu',
+                'Monday' => 'Senin',
+                'Tuesday' => 'Selasa',
+                'Wednesday' => 'Rabu',
+                'Thursday' => 'Kamis',
+                'Friday' => 'Jumat',
+                'Saturday' => 'Sabtu'
+            ];
+
+            $hariIndonesia = $hariMapping[$hariInggris];
+
+            // Rotasi kelompok berdasarkan nomor hari
+            $kelompokIndex = $i % $kelompokList->count();
+            $kelompok = $kelompokList[$kelompokIndex];
+
+            // Pastikan kelompok valid sebelum membuat jadwal
+            if (!$kelompok || !$kelompok->id) {
+                continue;
+            }
+
+            try {
+                JadwalPiket::create([
+                    'kelompok_piket_id' => $kelompok->id,
+                    'hari' => $hariIndonesia,
+                    'tanggal' => $tanggal
+                ]);
+            } catch (\Exception $e) {
+                return back()->with('error', 'Error saat membuat jadwal: ' . $e->getMessage());
+            }
         }
+
+        return redirect()->route('admin.jadwal.index')
+            ->with('success', "Jadwal rolling berhasil di-generate untuk {$jumlahHari} hari ke depan.");
     }
 
-    return redirect()->route('admin.jadwal.index')
-        ->with('success', "Jadwal rolling berhasil di-generate untuk {$jumlahHari} hari ke depan.");
-}
     /**
      * Get jadwal untuk dashboard dengan informasi tambahan
      */
     public static function getJadwalDashboard()
     {
         $jadwalHariIni = self::getJadwalHariIni();
+        $jadwalMingguIni = self::getJadwalMingguIni();
 
         return [
             'jadwal_hari_ini' => $jadwalHariIni,
+            'jadwal_minggu_ini' => $jadwalMingguIni,
             'total_kelompok' => KelompokPiket::count(),
-            'kelompok_aktif_hari_ini' => $jadwalHariIni ? $jadwalHariIni->kelompok : null
+            'kelompok_aktif_hari_ini' => $jadwalHariIni ? $jadwalHariIni->kelompok : null,
+            'total_jadwal_minggu_ini' => $jadwalMingguIni ? $jadwalMingguIni->count() : 0
         ];
+    }
+
+    /**
+     * API untuk mendapatkan jadwal (untuk AJAX calls)
+     */
+    public function getJadwalApi(Request $request)
+    {
+        $type = $request->get('type', 'hari_ini');
+
+        switch ($type) {
+            case 'hari_ini':
+                $jadwal = self::getJadwalHariIni();
+                break;
+            case 'minggu_ini':
+                $jadwal = self::getJadwalMingguIni();
+                break;
+            case 'bulan_ini':
+                $jadwal = self::getJadwalBulanIni();
+                break;
+            default:
+                $jadwal = null;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $jadwal
+        ]);
     }
 }

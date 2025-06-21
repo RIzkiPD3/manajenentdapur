@@ -1,92 +1,55 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Edit Menu</h1>
-                <p class="text-gray-600 mt-1">Perbarui informasi menu makanan</p>
-            </div>
-            <a href="{{ route('admin.menus.index') }}"
-               class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors font-medium text-sm shadow-sm">
-                ← Kembali
-            </a>
-        </div>
-    </div>
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Edit Menu</h2>
 
-    <!-- Error Messages -->
-    @if ($errors->any())
-        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 mb-6 rounded-lg">
-            <ul class="list-disc list-inside space-y-1">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+            <form action="{{ route('admin.menus.update', $menu->id) }}" method="POST" class="space-y-5">
+                @csrf
+                @method('PUT')
 
-    <!-- Form Card -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h2 class="text-lg font-semibold text-gray-900">Form Edit Menu</h2>
-        </div>
-
-        <form action="{{ route('admin.menus.update', $menu->id) }}" method="POST" class="p-6">
-            @csrf
-            @method('PUT')
-
-            <div class="space-y-6">
-                <!-- Nama Menu -->
-                <div>
-                    <label for="nama_menu" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Menu <span class="text-red-500">*</span>
-                    </label>
+                <div class="space-y-2">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Nama Menu</label>
                     <input type="text"
-                           id="nama_menu"
-                           name="nama_menu"
-                           value="{{ old('nama_menu', $menu->nama_menu) }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('nama_menu') border-red-500 @enderror"
-                           required
-                           placeholder="Masukkan nama menu">
-                    @error('nama_menu')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                           name="name"
+                           id="name"
+                           value="{{ old('name', $menu->name) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           required>
                 </div>
 
-                <!-- Resep -->
-                <div>
-                    <label for="resep" class="block text-sm font-medium text-gray-700 mb-2">
-                        Resep <span class="text-red-500">*</span>
-                    </label>
-                    <textarea id="resep"
-                              name="resep"
-                              rows="8"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('resep') border-red-500 @enderror"
-                              required
-                              placeholder="Masukkan resep lengkap dengan bahan-bahan dan cara pembuatan">{{ old('resep', $menu->resep) }}</textarea>
-                    @error('resep')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    <p class="mt-1 text-sm text-gray-500">
-                        Tulis resep secara detail termasuk bahan-bahan dan langkah-langkah pembuatan
-                    </p>
+                <div class="space-y-2">
+                    <label for="sesi" class="block text-sm font-medium text-gray-700">Sesi</label>
+                    <select name="sesi"
+                            id="sesi"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required>
+                        <option value="pagi" {{ old('sesi', $menu->sesi) == 'pagi' ? 'selected' : '' }}>Pagi</option>
+                        <option value="siang" {{ old('sesi', $menu->sesi) == 'siang' ? 'selected' : '' }}>Siang</option>
+                        <option value="malam" {{ old('sesi', $menu->sesi) == 'malam' ? 'selected' : '' }}>Malam</option>
+                    </select>
                 </div>
-            </div>
 
-            <!-- Form Actions -->
-            <div class="flex items-center justify-between pt-6 border-t border-gray-200 mt-6">
-                <a href="{{ route('admin.menus.index') }}"
-                   class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-medium">
-                    Batal
-                </a>
-                <button type="submit"
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
-                    Update Menu
-                </button>
-            </div>
-        </form>
+                <div class="space-y-2">
+                    <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
+                    <input type="date"
+                           name="tanggal"
+                           id="tanggal"
+                           value="{{ old('tanggal', $menu->tanggal) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           required>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                            class="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        Update Menu
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

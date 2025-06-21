@@ -16,19 +16,20 @@ class AdminDashboardController extends Controller
         $totalKelompok = KelompokPiket::count();
         $totalMenu = Menu::count();
 
-        // Hari ini
-        $hariIni = strtolower(Carbon::now()->locale('id')->isoFormat('dddd'));
+        // Menggunakan method getJadwalHariIni() dari JadwalPiketController
+        $jadwalHariIni = JadwalPiketController::getJadwalHariIni();
 
-        // Ambil jadwal hari ini
-        $jadwalHariIni = JadwalPiket::with(['kelompok', 'menu'])
-            ->where('hari', $hariIni)
-            ->first();
+        // Ambil menu hari ini (jika ada)
+        $menuHariIni = Menu::whereDate('tanggal', Carbon::today())
+            ->orderBy('sesi', 'asc')
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalAngkatan',
             'totalKelompok',
             'totalMenu',
-            'jadwalHariIni'
+            'jadwalHariIni',
+            'menuHariIni'
         ));
     }
 }

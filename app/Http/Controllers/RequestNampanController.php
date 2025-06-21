@@ -10,14 +10,94 @@ use Illuminate\Support\Facades\Auth;
 class RequestNampanController extends Controller
 {
     /**
+     * ✅ PERBAIKAN: Method index untuk angkatan
+     * Menampilkan daftar request nampan milik user yang login
+     */
+    public function index()
+    {
+        // Jika user adalah angkatan, tampilkan request miliknya sendiri
+        if (Auth::user()->role === 'angkatan') {
+            $requests = RequestNampan::where('user_id', Auth::id())
+                ->latest()
+                ->get();
+
+            return view('angkatan.riwayat-request', compact('requests'));
+        }
+
+        // Jika petugas/admin, tampilkan semua request
+        $requests = RequestNampan::with('user')
+            ->latest()
+            ->get();
+
+        return view('petugas.nampan.index', compact('requests'));
+    }
+
+    /**
      * Halaman form pengajuan request nampan oleh angkatan.
      */
     public function create()
     {
-        // Tidak perlu mengirim data kelompok ke view jika tidak digunakan
-        // Atau jika memang diperlukan, pastikan data yang dikirim sudah terformat dengan benar
+        // Ambil kelompok piket hari ini (opsional)
+        $kelompokPiket = JadwalPiket::with('kelompok')
+            ->whereDate('tanggal', today())
+            ->first();
 
-        return view('angkatan.request-nampan');
+        return view('angkatan.request-nampan', compact('kelompokPiket'));
+    }
+
+    /**
+     * ✅ PERBAIKAN: Method show untuk melihat detail request
+     */
+    public function show($id)
+    {
+        $request = RequestNampan::with('user')->findOrFail($id);
+
+        // Pastikan hanya pemilik request atau admin/petugas yang bisa melihat
+        if ($request->user_id !== Auth::id() && !in_array(Auth::user()->role, ['admin', 'petugas'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('angkatan.request-detail', compact('request'));
+    }
+
+    /**
+     * ✅ PERBAIKAN: Method edit untuk mengedit request
+     */
+    public function edit($id)
+    {
+        $requestNampan = RequestNampan::findOrFail($id);
+
+        // Pastikan hanya pemilik request yang bisa mengedit dan status masih pending
+        if ($requestNampan->user_id !== Auth::id() || $requestNampan->status !== 'pending') {
+            abort(403, 'Unauthorized action or request already processed.');
+        }
+
+        return view('angkatan.request-edit', compact('requestNampan'));
+    }
+
+    /**
+     * ✅ PERBAIKAN: Method update untuk mengupdate request
+     */
+    public function update(Request $request, $id)
+    {
+        $requestNampan = RequestNampan::findOrFail($id);
+
+        // Pastikan hanya pemilik request yang bisa mengupdate dan status masih pending
+        if ($requestNampan->user_id !== Auth::id() || $requestNampan->status !== 'pending') {
+            abort(403, 'Unauthorized action or request already processed.');
+        }
+
+        $request->validate([
+            'jumlah_nampan' => 'required|integer|min:1|max:50',
+            'keterangan' => 'nullable|string|max:1000',
+        ]);
+
+        $requestNampan->update([
+            'jumlah_nampan' => $request->jumlah_nampan,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return redirect()->route('angkatan.riwayat-request')->with('success', 'Request nampan berhasil diupdate.');
     }
 
     /**
@@ -36,64 +116,84 @@ class RequestNampanController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->back()->with('success', 'Request nampan berhasil dikirim.');
+        return redirect()->route('angkatan.riwayat-request')->with('success', 'Request nampan berhasil dikirim.');
     }
 
-   /**
-    * Petugas melihat semua request nampan yang masuk.
-    */
-   public function index()
-   {
-       $requests = RequestNampan::with('user')
-           ->latest()
-           ->get();
+    /**
+     * ✅ PERBAIKAN: Method updateStatus untuk petugas
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        // Pastikan hanya admin/petugas yang bisa mengupdate status
+        if (!in_array(Auth::user()->role, ['admin', 'petugas'])) {
+            abort(403, 'Unauthorized action.');
+        }
 
-       return view('petugas.nampan.index', compact('requests'));
-   }
+        $requestNampan = RequestNampan::findOrFail($id);
 
-   /**
-    * Santri melihat riwayat request miliknya sendiri
-    */
-   public function riwayatSaya()
-   {
-       $requests = RequestNampan::where('user_id', Auth::id())
-           ->latest()
-           ->get();
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected,completed',
+            'catatan_petugas' => 'nullable|string|max:1000',
+        ]);
 
-       return view('angkatan.riwayat-request', compact('requests'));
-   }
+        $requestNampan->update([
+            'status' => $request->status,
+            'catatan_petugas' => $request->catatan_petugas,
+            'processed_by' => Auth::id(),
+            'processed_at' => now(),
+        ]);
 
-   /**
-    * Petugas melihat semua riwayat permintaan
-    */
-   public function riwayatSemua()
-   {
-       $requests = RequestNampan::with('user')
-           ->latest()
-           ->get();
+        return redirect()->back()->with('success', 'Status request berhasil diupdate.');
+    }
 
-       // Hitung statistik untuk bulan ini
-       $thisMonthCount = RequestNampan::whereMonth('created_at', now()->month)
-           ->whereYear('created_at', now()->year)
-           ->count();
+    /**
+     * Santri melihat riwayat request miliknya sendiri
+     */
+    public function riwayatSaya()
+    {
+        $requests = RequestNampan::where('user_id', Auth::id())
+            ->latest()
+            ->get();
 
-       return view('petugas.nampan.riwayat', compact('requests', 'thisMonthCount'));
-   }
+        return view('angkatan.riwayat-request', compact('requests'));
+    }
 
-   /**
-    * Hapus request nampan
-    */
-   public function destroy($id)
-   {
-       $requestNampan = RequestNampan::findOrFail($id);
+    /**
+     * Petugas melihat semua riwayat permintaan
+     */
+    public function riwayatSemua()
+    {
+        $requests = RequestNampan::with('user')
+            ->latest()
+            ->get();
 
-       // Pastikan hanya pemilik request atau admin/petugas yang bisa menghapus
-       if ($requestNampan->user_id !== Auth::id() && !in_array(Auth::user()->role, ['admin', 'petugas'])) {
-           abort(403, 'Unauthorized action.');
-       }
+        // Hitung statistik untuk bulan ini
+        $thisMonthCount = RequestNampan::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
 
-       $requestNampan->delete();
+        return view('petugas.nampan.riwayat', compact('requests', 'thisMonthCount'));
+    }
 
-       return redirect()->back()->with('success', 'Request nampan berhasil dihapus.');
-   }
+    /**
+     * Hapus request nampan
+     */
+    public function destroy($id)
+    {
+        $requestNampan = RequestNampan::findOrFail($id);
+
+        // Pastikan hanya pemilik request atau admin/petugas yang bisa menghapus
+        if ($requestNampan->user_id !== Auth::id() && !in_array(Auth::user()->role, ['admin', 'petugas'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Pastikan request masih bisa dihapus (status pending)
+        if ($requestNampan->status !== 'pending' && Auth::user()->role === 'angkatan') {
+            return redirect()->back()->with('error', 'Request yang sudah diproses tidak dapat dihapus.');
+        }
+
+        $requestNampan->delete();
+
+        return redirect()->back()->with('success', 'Request nampan berhasil dihapus.');
+    }
 }

@@ -22,7 +22,7 @@ class JadwalPiket extends Model
      */
     public function kelompok()
     {
-        return $this->belongsTo(KelompokPiket::class, 'kelompok_piket_id'); // ✅ FIXED
+        return $this->belongsTo(KelompokPiket::class, 'kelompok_piket_id');
     }
 
     /**

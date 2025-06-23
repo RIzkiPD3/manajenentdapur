@@ -93,20 +93,6 @@
                     ></textarea>
                 </div>
 
-                <!-- Status Aktif -->
-                <div class="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="statusAktif"
-                        name="statusAktif"
-                        checked
-                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    >
-                    <label for="statusAktif" class="ml-2 text-sm text-gray-700">
-                        Aktifkan angkatan ini
-                    </label>
-                </div>
-
                 <!-- Submit Button -->
                 <button
                     type="submit"

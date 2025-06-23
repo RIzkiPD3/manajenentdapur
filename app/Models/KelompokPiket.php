@@ -9,7 +9,7 @@ class KelompokPiket extends Model
     protected $fillable = [
         'nama_kelompok',
         'anggota',
-        'urutan' // ✅ SUDAH BENAR
+        'urutan'
     ];
 
     protected $casts = [
@@ -17,11 +17,11 @@ class KelompokPiket extends Model
     ];
 
     /**
-     * Relasi ke JadwalPiket - SESUAIKAN dengan field yang benar
+     * Relasi ke JadwalPiket
      */
     public function jadwalPikets()
     {
-        return $this->hasMany(JadwalPiket::class, 'kelompok_piket_id'); // ✅ FIXED
+        return $this->hasMany(JadwalPiket::class, 'kelompok_piket_id');
     }
 
     /**
@@ -40,11 +40,5 @@ class KelompokPiket extends Model
         return "Kelompok " . $this->nama_kelompok;
     }
 
-    /**
-     * ✅ Accessor untuk nama agar view bisa mengakses ->nama
-     */
-    public function getNamaAttribute()
-    {
-        return $this->nama_kelompok;
-    }
+    // HAPUS accessor getNamaAttribute() karena bisa konflik dengan kolom database
 }

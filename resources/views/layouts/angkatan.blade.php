@@ -9,16 +9,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @stack('styles')
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-50 font-sans overflow-x-hidden">
 
-<div class="flex min-h-screen">
+<div class="min-h-screen">
 
     <!-- Sidebar Overlay (Mobile) -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-slate-800 shadow-lg md:relative min-h-screen transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:block">
-        <div class="p-6 space-y-6 min-h-screen flex flex-col">
+    <aside id="sidebar" class="fixed left-0 top-0 w-64 h-full bg-slate-800 shadow-lg z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
+        <div class="p-6 space-y-6 min-h-full flex flex-col">
             <!-- Logo & Title -->
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -82,7 +82,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 bg-gray-50">
+    <main class="min-h-screen bg-gray-50 md:ml-64">
         <!-- Header Bar -->
         <div class="bg-white shadow-sm border-b border-gray-200 px-4 md:px-8 py-4">
             <div class="flex items-center justify-between">

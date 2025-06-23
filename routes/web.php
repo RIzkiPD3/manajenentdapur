@@ -119,9 +119,7 @@ Route::middleware(['auth', AngkatanMiddleware::class])
     ->prefix('angkatan')
     ->name('angkatan.')
     ->group(function () {
-        Route::get('/dashboard', function() {
-            return view('angkatan.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [AngkatanController::class, 'index'])->name('dashboard');
 
         // ✅ SOLUSI LENGKAP: Resource Route untuk Request Nampan
         Route::resource('request-nampan', RequestNampanController::class)->except(['show', 'edit', 'update']);

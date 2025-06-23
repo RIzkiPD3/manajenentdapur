@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('nama_kelompok');
             $table->integer('urutan')->unique(); // ✅ Kolom dan constraint langsung
+            $table->json('anggota')->nullable();
             $table->timestamps();
         });
     }

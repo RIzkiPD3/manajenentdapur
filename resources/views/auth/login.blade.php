@@ -118,9 +118,6 @@
                         <input type="checkbox" name="remember" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
-                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500 font-medium transition-colors">
-                        Forgot password?
-                    </a>
                 </div>
 
                 <!-- Submit Button -->

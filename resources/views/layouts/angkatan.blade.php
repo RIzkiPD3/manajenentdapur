@@ -17,7 +17,7 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-slate-800 shadow-lg fixed md:relative min-h-screen z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <aside id="sidebar" class="w-64 bg-slate-800 shadow-lg md:relative min-h-screen transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:block">
         <div class="p-6 space-y-6 min-h-screen flex flex-col">
             <!-- Logo & Title -->
             <div class="flex items-center space-x-3">

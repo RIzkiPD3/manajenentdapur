@@ -1,71 +1,90 @@
 @extends('layouts.admin')
 
+@section('title', 'Edit Sesi Absensi - Admin')
+
+@section('page-title', 'Edit Sesi Absensi')
+@section('page-description', 'Ubah informasi sesi absensi dengan benar')
+
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-4 shadow-lg">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m0 0l3-3m-3 3l3 3m6-9a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Edit Sesi Absensi</h1>
-            <p class="text-gray-600">Ubah informasi sesi absensi dengan benar</p>
-        </div>
-
-        <!-- Form Card -->
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            <div class="px-8 py-6 bg-gradient-to-r from-indigo-600 to-blue-500">
-                <h2 class="text-xl font-semibold text-white">Form Edit Sesi</h2>
-            </div>
-
-            <!-- FIXED: Menggunakan parameter 'sesi' alih-alih 'sesi_absensi' -->
-            <form action="{{ route('admin.sesi-absensi.update', $sesi) }}" method="POST" class="p-8 space-y-6">
+<div class="max-w-2xl mx-auto">
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="p-6">
+            <form action="{{ route('admin.sesi-absensi.update', $sesi) }}" method="POST" class="space-y-6">
                 @csrf
                 @method('PUT')
 
                 <!-- Nama Sesi -->
                 <div>
-                    <label for="nama_sesi" class="block text-sm font-semibold text-gray-700 mb-2">Nama Sesi</label>
-                    <select name="nama_sesi" id="nama_sesi" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-300 bg-gray-50 hover:bg-white">
-                        <option value="Pagi" {{ $sesi->nama_sesi === 'Pagi' ? 'selected' : '' }}>🌅 Pagi</option>
-                        <option value="Siang" {{ $sesi->nama_sesi === 'Siang' ? 'selected' : '' }}>☀️ Siang</option>
-                        <option value="Malam" {{ $sesi->nama_sesi === 'Malam' ? 'selected' : '' }}>🌙 Malam</option>
+                    <label for="nama_sesi" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nama Sesi <span class="text-red-500">*</span>
+                    </label>
+                    <select name="nama_sesi" id="nama_sesi" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white transition-colors">
+                        <option value="Pagi" {{ $sesi->nama_sesi === 'Pagi' ? 'selected' : '' }}>Pagi</option>
+                        <option value="Siang" {{ $sesi->nama_sesi === 'Siang' ? 'selected' : '' }}>Siang</option>
+                        <option value="Malam" {{ $sesi->nama_sesi === 'Malam' ? 'selected' : '' }}>Malam</option>
                     </select>
                     @error('nama_sesi')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Waktu Mulai -->
-                <div>
-                    <label for="waktu_mulai" class="block text-sm font-semibold text-gray-700 mb-2">Waktu Mulai</label>
-                    <input type="time" name="waktu_mulai" id="waktu_mulai" value="{{ $sesi->waktu_mulai }}" required
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-300 bg-gray-50 hover:bg-white text-gray-700">
-                    @error('waktu_mulai')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                <!-- Time Inputs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Waktu Mulai -->
+                    <div>
+                        <label for="waktu_mulai" class="block text-sm font-medium text-gray-700 mb-2">
+                            Waktu Mulai <span class="text-red-500">*</span>
+                        </label>
+                        <input type="time"
+                               name="waktu_mulai"
+                               id="waktu_mulai"
+                               value="{{ $sesi->waktu_mulai }}"
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors">
+                        @error('waktu_mulai')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Waktu Selesai -->
+                    <div>
+                        <label for="waktu_selesai" class="block text-sm font-medium text-gray-700 mb-2">
+                            Waktu Selesai <span class="text-red-500">*</span>
+                        </label>
+                        <input type="time"
+                               name="waktu_selesai"
+                               id="waktu_selesai"
+                               value="{{ $sesi->waktu_selesai }}"
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors">
+                        @error('waktu_selesai')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                <!-- Waktu Selesai -->
-                <div>
-                    <label for="waktu_selesai" class="block text-sm font-semibold text-gray-700 mb-2">Waktu Selesai</label>
-                    <input type="time" name="waktu_selesai" id="waktu_selesai" value="{{ $sesi->waktu_selesai }}" required
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-300 bg-gray-50 hover:bg-white text-gray-700">
-                    @error('waktu_selesai')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                <!-- Info Alert -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <i class="fa-solid fa-info-circle text-blue-500 mr-2 mt-0.5"></i>
+                        <div>
+                            <h3 class="text-sm font-medium text-blue-800">Catatan</h3>
+                            <p class="text-sm text-blue-700 mt-1">Pastikan waktu selesai lebih besar dari waktu mulai.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Tombol Aksi -->
-                <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-100">
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200">
                     <a href="{{ route('admin.sesi-absensi.index') }}"
-                       class="flex-1 inline-flex items-center justify-center px-6 py-3 border-2 border-gray-300 text-gray-700 bg-white rounded-xl hover:bg-gray-50 focus:ring-2 focus:ring-gray-200 transition font-semibold">
-                        Batal
+                       class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 text-center font-medium transition-colors">
+                        Kembali
                     </a>
                     <button type="submit"
-                            class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-700 text-white rounded-xl hover:from-indigo-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-200 font-semibold transition-all shadow-md">
+                            class="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 font-medium transition-colors">
+                        <i class="fa-solid fa-save mr-1"></i>
                         Simpan Perubahan
                     </button>
                 </div>
@@ -73,4 +92,34 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const waktuMulai = document.getElementById('waktu_mulai');
+    const waktuSelesai = document.getElementById('waktu_selesai');
+
+    function validateTime() {
+        if (waktuMulai.value && waktuSelesai.value) {
+            if (waktuMulai.value >= waktuSelesai.value) {
+                waktuSelesai.setCustomValidity('Waktu selesai harus lebih besar dari waktu mulai');
+                waktuSelesai.classList.add('border-red-500');
+                waktuSelesai.classList.remove('border-gray-300');
+            } else {
+                waktuSelesai.setCustomValidity('');
+                waktuSelesai.classList.remove('border-red-500');
+                waktuSelesai.classList.add('border-gray-300');
+            }
+        }
+    }
+
+    waktuMulai.addEventListener('change', function() {
+        waktuSelesai.min = this.value;
+        validateTime();
+    });
+
+    waktuSelesai.addEventListener('change', validateTime);
+});
+</script>
+@endpush
 @endsection

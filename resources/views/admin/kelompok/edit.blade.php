@@ -1,166 +1,122 @@
 @extends('layouts.admin')
 
+@section('page-title', 'Edit Kelompok')
+@section('page-description', 'Perbarui informasi kelompok piket')
+
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header Section -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                </svg>
-            </div>
-            <h1 class="text-4xl font-bold text-blue-600 mb-2">
-                Edit Kelompok Piket
-            </h1>
-            <p class="text-gray-600 text-lg">Perbarui informasi kelompok piket</p>
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-slate-800">Edit Kelompok Piket</h2>
+            <p class="text-sm text-slate-600 mt-1">Perbarui informasi kelompok piket</p>
         </div>
 
-        <!-- Form Card -->
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            <div class="bg-blue-600 px-8 py-6">
-                <h2 class="text-xl font-semibold text-white">Edit Informasi Kelompok</h2>
+        <form action="{{ route('admin.kelompok.update', $kelompok->id) }}" method="POST" class="p-6 space-y-6">
+            @csrf
+            @method('PUT')
+
+            <!-- Nama Kelompok -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Nama Kelompok
+                </label>
+                <input type="text"
+                       name="nama_kelompok"
+                       value="{{ old('nama_kelompok', $kelompok->nama_kelompok) }}"
+                       required
+                       placeholder="Masukkan nama kelompok..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 @error('nama_kelompok') border-red-500 @enderror">
+                @error('nama_kelompok')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <form action="{{ route('admin.kelompok.update', $kelompok->id) }}" method="POST" class="p-8 space-y-8">
-                @csrf
-                @method('PUT')
+            <!-- Urutan -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Urutan
+                </label>
+                <input type="number"
+                       name="urutan"
+                       value="{{ old('urutan', $kelompok->urutan) }}"
+                       required
+                       min="1"
+                       placeholder="Masukkan urutan kelompok..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 @error('urutan') border-red-500 @enderror">
+                @error('urutan')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
 
-                <!-- Nama Kelompok -->
-                <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <span class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                            </svg>
-                            Nama Kelompok
-                        </span>
-                    </label>
-                    <input type="text"
-                           name="nama_kelompok"
-                           value="{{ old('nama_kelompok', $kelompok->nama_kelompok) }}"
-                           required
-                           placeholder="Masukkan nama kelompok..."
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none hover:border-gray-300">
-                    @error('nama_kelompok')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+            <!-- Anggota -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Anggota Kelompok
+                </label>
 
-                <!-- Urutan -->
-                <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <span class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
-                            </svg>
-                            Urutan Kelompok
-                        </span>
-                    </label>
-                    <input type="number"
-                           name="urutan"
-                           value="{{ old('urutan', $kelompok->urutan) }}"
-                           required
-                           min="1"
-                           placeholder="Masukkan urutan kelompok..."
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none hover:border-gray-300">
-                    @error('urutan')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Anggota Section -->
-                <div class="space-y-4">
-                    <label class="block text-sm font-semibold text-gray-700">
-                        <span class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
-                            </svg>
-                            Anggota Kelompok
-                        </span>
-                    </label>
-
-                    <div id="anggota-container" class="space-y-3">
-                        <!-- Existing members -->
-                        @if(is_array($kelompok->anggota))
-                            @foreach($kelompok->anggota as $index => $anggota)
-                            <div class="anggota-item flex items-center space-x-3 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-300 transition-colors">
-                                <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <span class="text-sm font-semibold text-blue-600 member-number">{{ $index + 1 }}</span>
-                                </div>
-                                <input type="text"
-                                       name="anggota[]"
-                                       value="{{ $anggota }}"
-                                       placeholder="Nama anggota..."
-                                       required
-                                       class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all outline-none">
-                                <button type="button"
-                                        class="remove-member {{ count($kelompok->anggota) <= 1 ? 'hidden' : '' }} flex-shrink-0 w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center transition-colors"
-                                        onclick="removeMember(this)">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
+                <div id="anggota-container" class="space-y-3">
+                    @if(is_array($kelompok->anggota))
+                        @foreach($kelompok->anggota as $index => $anggota)
+                        <div class="anggota-item flex items-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                                <span class="text-sm font-medium text-slate-600 member-number">{{ $index + 1 }}</span>
                             </div>
-                            @endforeach
-                        @else
-                            <!-- Fallback jika anggota bukan array -->
-                            <div class="anggota-item flex items-center space-x-3 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-300 transition-colors">
-                                <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <span class="text-sm font-semibold text-blue-600 member-number">1</span>
-                                </div>
-                                <input type="text"
-                                       name="anggota[]"
-                                       value=""
-                                       placeholder="Nama anggota..."
-                                       required
-                                       class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all outline-none">
-                                <button type="button"
-                                        class="remove-member hidden flex-shrink-0 w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center transition-colors"
-                                        onclick="removeMember(this)">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
+                            <input type="text"
+                                   name="anggota[]"
+                                   value="{{ $anggota }}"
+                                   placeholder="Nama anggota..."
+                                   required
+                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <button type="button"
+                                    class="remove-member {{ count($kelompok->anggota) <= 1 ? 'hidden' : '' }} flex-shrink-0 w-8 h-8 text-red-500 hover:bg-red-50 rounded-full flex items-center justify-center"
+                                    onclick="removeMember(this)">
+                                <i class="fa-solid fa-times text-sm"></i>
+                            </button>
+                        </div>
+                        @endforeach
+                    @else
+                        <!-- Fallback jika anggota bukan array -->
+                        <div class="anggota-item flex items-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                                <span class="text-sm font-medium text-slate-600 member-number">1</span>
                             </div>
-                        @endif
-                    </div>
-
-                    <!-- Add Member Button -->
-                    <button type="button"
-                            id="add-member-btn"
-                            onclick="addMember()"
-                            class="w-full py-3 border-2 border-dashed border-blue-300 text-blue-600 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 font-medium flex items-center justify-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                        </svg>
-                        <span>Tambah Anggota</span>
-                    </button>
+                            <input type="text"
+                                   name="anggota[]"
+                                   value=""
+                                   placeholder="Nama anggota..."
+                                   required
+                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <button type="button"
+                                    class="remove-member hidden flex-shrink-0 w-8 h-8 text-red-500 hover:bg-red-50 rounded-full flex items-center justify-center"
+                                    onclick="removeMember(this)">
+                                <i class="fa-solid fa-times text-sm"></i>
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
-                    <a href="{{ route('admin.kelompok.index') }}"
-                       class="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors duration-200 text-center border border-gray-200">
-                        <span class="flex items-center justify-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                            Batal
-                        </span>
-                    </a>
-                    <button type="submit"
-                            class="w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                        <span class="flex items-center justify-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            Update Kelompok
-                        </span>
-                    </button>
-                </div>
-            </form>
-        </div>
+                <!-- Add Member Button -->
+                <button type="button"
+                        onclick="addMember()"
+                        class="mt-3 w-full py-2 border-2 border-dashed border-gray-300 text-slate-600 rounded-lg hover:border-orange-500 hover:text-orange-500 transition-colors font-medium">
+                    <i class="fa-solid fa-plus mr-2"></i>
+                    Tambah Anggota
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                <a href="{{ route('admin.kelompok.index') }}"
+                   class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
+                    <i class="fa-solid fa-save mr-2"></i>
+                    Update
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -172,23 +128,21 @@ function addMember() {
     const container = document.getElementById('anggota-container');
 
     const memberItem = document.createElement('div');
-    memberItem.className = 'anggota-item flex items-center space-x-3 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-300 transition-colors animate-fade-in';
+    memberItem.className = 'anggota-item flex items-center gap-3';
 
     memberItem.innerHTML = `
-        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-            <span class="text-sm font-semibold text-blue-600 member-number">${memberCount}</span>
+        <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+            <span class="text-sm font-medium text-slate-600 member-number">${memberCount}</span>
         </div>
         <input type="text"
                name="anggota[]"
                placeholder="Nama anggota..."
                required
-               class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all outline-none">
+               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
         <button type="button"
-                class="remove-member flex-shrink-0 w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center transition-colors"
+                class="remove-member flex-shrink-0 w-8 h-8 text-red-500 hover:bg-red-50 rounded-full flex items-center justify-center"
                 onclick="removeMember(this)">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
+            <i class="fa-solid fa-times text-sm"></i>
         </button>
     `;
 
@@ -203,14 +157,10 @@ function addMember() {
 
 function removeMember(button) {
     const memberItem = button.closest('.anggota-item');
-    memberItem.style.animation = 'fade-out 0.3s ease-out';
-
-    setTimeout(() => {
-        memberItem.remove();
-        memberCount--;
-        updateRemoveButtons();
-        updateMemberNumbers();
-    }, 300);
+    memberItem.remove();
+    memberCount--;
+    updateRemoveButtons();
+    updateMemberNumbers();
 }
 
 function updateRemoveButtons() {
@@ -230,37 +180,6 @@ function updateMemberNumbers() {
         number.textContent = index + 1;
     });
 }
-
-// Add some CSS animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fade-out {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-    }
-
-    .animate-fade-in {
-        animation: fade-in 0.3s ease-out;
-    }
-`;
-document.head.appendChild(style);
 
 // Initialize
 updateRemoveButtons();

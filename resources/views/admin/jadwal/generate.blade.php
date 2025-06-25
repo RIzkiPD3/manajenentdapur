@@ -4,7 +4,7 @@
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-2xl mx-auto px-4">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
+            <div class="bg-slate-800 text-white px-6 py-4 rounded-t-lg">
                 <h5 class="text-lg font-semibold flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -40,7 +40,7 @@
                     @csrf
 
                     <div>
-                        <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="tanggal_mulai" class="block text-sm font-medium text-slate-700 mb-2">
                             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
@@ -49,7 +49,7 @@
                         <input type="date"
                                name="tanggal_mulai"
                                id="tanggal_mulai"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('tanggal_mulai') border-red-500 @enderror"
+                               class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent @error('tanggal_mulai') border-red-500 @enderror"
                                value="{{ old('tanggal_mulai', date('Y-m-d')) }}"
                                required>
                         @error('tanggal_mulai')
@@ -58,7 +58,7 @@
                     </div>
 
                     <div>
-                        <label for="jumlah_hari" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="jumlah_hari" class="block text-sm font-medium text-slate-700 mb-2">
                             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
@@ -67,25 +67,25 @@
                         <input type="number"
                                name="jumlah_hari"
                                id="jumlah_hari"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('jumlah_hari') border-red-500 @enderror"
+                               class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent @error('jumlah_hari') border-red-500 @enderror"
                                value="{{ old('jumlah_hari', 30) }}"
                                min="1"
                                max="365"
                                required>
                         @error('jumlah_hari')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                        <p class="text-gray-500 text-sm mt-1">Maksimal 365 hari</p>
+                        @enderror>
+                        <p class="text-slate-500 text-sm mt-1">Maksimal 365 hari</p>
                     </div>
 
-                    <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-md p-4">
                         <div class="flex items-start">
-                            <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-slate-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                             </svg>
                             <div>
-                                <p class="text-blue-800 font-medium mb-2">Informasi:</p>
-                                <ul class="text-blue-700 text-sm space-y-1 list-disc list-inside">
+                                <p class="text-slate-800 font-medium mb-2">Informasi:</p>
+                                <ul class="text-slate-700 text-sm space-y-1 list-disc list-inside">
                                     <li>Jadwal akan di-generate secara berurutan berdasarkan kelompok yang tersedia</li>
                                     <li>Jadwal lama pada periode yang sama akan dihapus dan diganti dengan jadwal baru</li>
                                     <li>Pastikan sudah ada kelompok piket sebelum generate jadwal</li>
@@ -96,14 +96,14 @@
 
                     <div class="flex justify-between items-center pt-4">
                         <a href="{{ route('admin.jadwal.index') }}"
-                           class="inline-flex items-center px-4 py-2 bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-gray-600 transition duration-200">
+                           class="inline-flex items-center px-4 py-2 bg-slate-500 text-white text-sm font-medium rounded-md hover:bg-slate-600 transition duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                             </svg>
                             Kembali
                         </a>
                         <button type="submit"
-                                class="inline-flex items-center px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition duration-200">
+                                class="inline-flex items-center px-6 py-2 bg-purple-400 text-white text-sm font-medium rounded-md hover:bg-purple-500 transition duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>

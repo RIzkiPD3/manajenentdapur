@@ -12,7 +12,7 @@
                 </div>
                 <div class="flex space-x-3">
                     <a href="{{ route('petugas.nampan.riwayat') }}"
-                       class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200">
+                       class="inline-flex items-center px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white font-medium rounded-lg transition duration-200">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -24,7 +24,7 @@
 
         <!-- Alert Messages -->
         @if(session('success'))
-            <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg flex items-center">
+            <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                 </svg>
@@ -36,7 +36,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
                 <div class="flex items-center">
-                    <div class="p-3 bg-blue-500 rounded-lg">
+                    <div class="p-3 bg-slate-600 rounded-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
@@ -50,7 +50,7 @@
 
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
                 <div class="flex items-center">
-                    <div class="p-3 bg-amber-500 rounded-lg">
+                    <div class="p-3 bg-orange-500 rounded-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -76,7 +76,7 @@
                             <div class="flex-1">
                                 <div class="flex items-center space-x-3 mb-3">
                                     <div class="flex-shrink-0">
-                                        <div class="w-12 h-12 bg-violet-500 rounded-full flex items-center justify-center">
+                                        <div class="w-12 h-12 bg-slate-600 rounded-full flex items-center justify-center">
                                             <span class="text-white font-semibold text-lg">{{ substr($request->user->name, 0, 1) }}</span>
                                         </div>
                                     </div>
@@ -86,11 +86,11 @@
                                     </div>
                                     <div class="ml-auto">
                                         @if($request->status === 'pending')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
                                                 Menunggu
                                             </span>
                                         @elseif($request->status === 'approved')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                                 Disetujui
                                             </span>
                                         @elseif($request->status === 'rejected')
@@ -103,8 +103,8 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div class="flex items-center text-sm text-slate-600">
-                                        <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center mr-3">
-                                            <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center mr-3">
+                                            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 110 2h-1v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 110-2h4z"></path>
                                             </svg>
                                         </div>
@@ -114,8 +114,8 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center text-sm text-slate-600">
-                                        <div class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center mr-3">
-                                            <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center mr-3">
+                                            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-4 6v6m-7-3h14a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2z"></path>
                                             </svg>
                                         </div>
@@ -138,8 +138,8 @@
                                 @if($request->catatan_petugas)
                                     <div class="mb-4">
                                         <p class="text-sm font-semibold text-slate-700 mb-2">Catatan Petugas:</p>
-                                        <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
-                                            <p class="text-sm text-blue-800">{{ $request->catatan_petugas }}</p>
+                                        <div class="bg-slate-100 border border-slate-300 p-3 rounded-lg">
+                                            <p class="text-sm text-slate-800">{{ $request->catatan_petugas }}</p>
                                         </div>
                                     </div>
                                 @endif
@@ -150,7 +150,7 @@
                         @if($request->status === 'pending')
                             <div class="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-slate-200">
                                 <button onclick="openUpdateModal({{ $request->id }}, '{{ $request->user->name }}', {{ $request->jumlah_nampan }})"
-                                        class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 shadow-sm">
+                                        class="inline-flex items-center px-5 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-medium rounded-lg transition duration-200 shadow-sm">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
@@ -208,18 +208,30 @@
                     <p class="text-sm text-slate-600">Jumlah nampan: <span id="modalJumlah" class="font-semibold text-slate-900"></span></p>
                 </div>
 
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Status</label>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="radio" name="status" value="approved" class="text-green-600 focus:ring-green-500 focus:ring-2">
+                            <span class="ml-2 text-sm text-slate-700">Setujui Request</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="status" value="rejected" class="text-red-600 focus:ring-red-500 focus:ring-2">
+                            <span class="ml-2 text-sm text-slate-700">Tolak Request</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="mb-6">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Catatan Petugas (Opsional)</label>
-                    <textarea name="catatan_petugas" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Berikan catatan jika diperlukan..."></textarea>
+                    <textarea name="catatan_petugas" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent" placeholder="Berikan catatan jika diperlukan..."></textarea>
                 </div>
 
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeUpdateModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium rounded-lg transition duration-200">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 shadow-sm">
+                    <button type="submit" class="px-5 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-medium rounded-lg transition duration-200 shadow-sm">
                         Update Status
                     </button>
                 </div>

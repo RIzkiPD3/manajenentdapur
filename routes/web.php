@@ -10,7 +10,8 @@ use App\Http\Controllers\{
     SesiAbsensiController,
     AbsensiPetugasController,
     RequestNampanController,
-    AngkatanController
+    AngkatanController,
+    PetugasController
 };
 
 use App\Http\Middleware\{
@@ -84,9 +85,7 @@ Route::middleware(['auth', PetugasMiddleware::class])
     ->prefix('petugas')
     ->name('petugas.')
     ->group(function () {
-        Route::get('/dashboard', function() {
-            return view('petugas.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [PetugasController::class, 'index'])->name('dashboard');
 
         Route::get('/jadwal', [JadwalPiketController::class, 'jadwalPetugas'])->name('jadwal');
 

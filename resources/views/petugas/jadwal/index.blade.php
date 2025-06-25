@@ -1,117 +1,126 @@
 @extends('layouts.petugas')
+
+@section('title', 'Jadwal Piket')
+@section('page-title', 'Jadwal Piket')
+@section('page-description', 'Lihat jadwal piket hari ini')
+
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8 px-4">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
+<div class="max-w-6xl mx-auto">
+    @if(session('message'))
+        <!-- No Schedule Message -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-exclamation-triangle text-orange-500 text-2xl"></i>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Jadwal Piket</h1>
-            <p class="text-lg text-gray-600">{{ $hari }}</p>
+            <h2 class="text-xl font-semibold text-slate-800 mb-2">Tidak Ada Jadwal</h2>
+            <p class="text-slate-600">{{ $message }}</p>
         </div>
-
-        @if(session('message'))
-            <!-- No Schedule Message -->
-            <div class="bg-white rounded-lg shadow-sm border p-8 text-center">
-                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
-                </div>
-                <h2 class="text-xl font-semibold text-gray-900 mb-2">Tidak Ada Jadwal</h2>
-                <p class="text-gray-600">{{ $message }}</p>
-            </div>
-        @else
-            <!-- Main Card -->
-            <div class="bg-white rounded-lg shadow-sm border mb-6">
-                <!-- Header -->
-                <div class="bg-blue-500 px-6 py-4 rounded-t-lg">
-                    <h2 class="text-xl font-semibold text-white">{{ $kelompok->nama_kelompok ?? 'Tidak Ada Kelompok' }}</h2>
-                    <p class="text-blue-100 text-sm">Kelompok Piket Hari Ini</p>
-                </div>
-
-                <!-- Content -->
-                <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Daftar Anggota</h3>
-
-                    @if($kelompok && $kelompok->anggota)
-                        @forelse ($kelompok->anggota as $index => $anggota)
-                            <div class="flex items-center p-4 mb-3 bg-gray-50 rounded-lg">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-4">
-                                    <span class="text-white font-medium text-sm">{{ $index + 1 }}</span>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-gray-900 font-medium">{{ $anggota }}</p>
-                                </div>
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="text-center py-8">
-                                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-600 mb-2">Belum Ada Anggota</h3>
-                                <p class="text-gray-500">Belum ada anggota yang terdaftar dalam kelompok ini.</p>
-                            </div>
-                        @endforelse
-                    @else
-                        <div class="text-center py-8">
-                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold text-gray-600 mb-2">Belum Ada Anggota</h3>
-                            <p class="text-gray-500">Belum ada anggota yang terdaftar dalam kelompok ini.</p>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Footer -->
-                <div class="bg-gray-50 px-6 py-3 rounded-b-lg border-t">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Diperbarui: {{ now()->format('d M Y, H:i') }}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                            Aktif
-                        </span>
+    @else
+        <!-- Jadwal Piket & Menu Combined Card -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-6 rounded-t-lg">
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-white">Jadwal Piket & Menu Hari Ini</h2>
+                        <p class="text-blue-100 text-sm flex items-center">
+                            <i class="fa-solid fa-calendar-day mr-2"></i>
+                            {{ $hari }}
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Menu Hari Ini Card -->
-            <div class="bg-white rounded-lg shadow-sm border">
-                <!-- Header -->
-                <div class="bg-orange-500 px-6 py-4 rounded-t-lg">
-                    <h2 class="text-xl font-semibold text-white">Menu Hari Ini</h2>
-                    <p class="text-orange-100 text-sm">Daftar Menu yang Tersedia</p>
-                </div>
+            <!-- Content -->
+            <div class="p-6">
+                <!-- Kelompok Piket Section -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center">
+                                <i class="fa-solid fa-users text-blue-500 text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-800">{{ $kelompok->nama_kelompok ?? 'Tidak Ada Kelompok' }}</h3>
+                                <p class="text-sm text-slate-600">Kelompok Piket Hari Ini</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Content -->
-                <div class="p-6">
-                    @if($menuHariIni && $menuHariIni->count() > 0)
-                        <div class="space-y-4">
-                            @foreach($menuHariIni as $menu)
-                                <div class="flex items-center p-4 bg-orange-50 rounded-lg border border-orange-100">
-                                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                        </svg>
+                    @if($kelompok && $kelompok->anggota)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            @forelse ($kelompok->anggota as $index => $anggota)
+                                <div class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors">
+                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                        <span class="text-white font-semibold text-sm">{{ $index + 1 }}</span>
                                     </div>
                                     <div class="flex-1">
-                                        <h4 class="text-lg font-semibold text-gray-900">{{ $menu->nama_menu }}</h4>
-                                        <p class="text-sm text-gray-600">{{ ucfirst($menu->sesi) }}</p>
+                                        <p class="text-slate-900 font-medium">{{ $anggota }}</p>
+                                        <p class="text-xs text-slate-500">Anggota Kelompok</p>
+                                    </div>
+                                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-check text-blue-600 text-sm"></i>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-span-2 text-center py-6">
+                                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fa-solid fa-user-plus text-slate-400 text-lg"></i>
+                                    </div>
+                                    <h4 class="text-md font-semibold text-slate-700 mb-1">Belum Ada Anggota</h4>
+                                    <p class="text-sm text-slate-500">Belum ada anggota yang terdaftar dalam kelompok ini.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    @else
+                        <div class="text-center py-6">
+                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fa-solid fa-user-plus text-slate-400 text-lg"></i>
+                            </div>
+                            <h4 class="text-md font-semibold text-slate-700 mb-1">Belum Ada Anggota</h4>
+                            <p class="text-sm text-slate-500">Belum ada anggota yang terdaftar dalam kelompok ini.</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-6"></div>
+
+                <!-- Menu Hari Ini Section -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center">
+                            <i class="fa-solid fa-utensils text-orange-500 text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-800">Menu Hari Ini</h3>
+                            <p class="text-sm text-slate-600">Daftar Menu yang Tersedia</p>
+                        </div>
+                    </div>
+
+                    @if($menuHariIni && $menuHariIni->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($menuHariIni as $menu)
+                                <div class="flex items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 transition-colors">
+                                    <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fa-solid fa-bowl-food text-white"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-slate-900">{{ $menu->nama_menu }}</h4>
+                                        <p class="text-sm text-slate-600 flex items-center">
+                                            <i class="fa-solid fa-clock mr-1"></i>
+                                            {{ ucfirst($menu->sesi) }}
+                                        </p>
                                     </div>
                                     <div class="text-right">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-700">
+                                        @php
+                                            $sesiColors = [
+                                                'sarapan' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                                                'makan siang' => 'bg-orange-100 text-orange-700 border-orange-200',
+                                                'makan malam' => 'bg-purple-100 text-purple-700 border-purple-200'
+                                            ];
+                                        @endphp
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border {{ $sesiColors[strtolower($menu->sesi)] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
                                             {{ ucfirst($menu->sesi) }}
                                         </span>
                                     </div>
@@ -119,59 +128,32 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center py-8">
-                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
+                        <div class="text-center py-6">
+                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fa-solid fa-plate-wheat text-slate-400 text-lg"></i>
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-600 mb-2">Belum Ada Menu</h3>
-                            <p class="text-gray-500">Belum ada menu yang diatur untuk hari ini.</p>
+                            <h4 class="text-md font-semibold text-slate-700 mb-1">Belum Ada Menu</h4>
+                            <p class="text-sm text-slate-500">Belum ada menu yang diatur untuk hari ini.</p>
                         </div>
                     @endif
                 </div>
+            </div>
 
-                <!-- Footer -->
-                <div class="bg-gray-50 px-6 py-3 rounded-b-lg border-t">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Menu untuk: {{ now()->format('d M Y') }}</span>
-                        <span class="text-gray-500">{{ $menuHariIni ? $menuHariIni->count() : 0 }} item</span>
+            <!-- Footer -->
+            <div class="bg-slate-50 px-6 py-4 rounded-b-lg border-t border-slate-200">
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center text-slate-600">
+                        <i class="fa-solid fa-clock mr-2"></i>
+                        <span>Diperbarui: {{ now()->format('d M Y, H:i') }}</span>
                     </div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                        <i class="fa-solid fa-circle text-blue-500 mr-1 text-xs"></i>
+                        Aktif
+                    </span>
                 </div>
             </div>
-        @endif
-    </div>
+        </div>
+    @endif
 </div>
 
-@if($kelompok)
-<script>
-function tandaiSelesai() {
-    if (confirm('Apakah Anda yakin ingin menandai tugas piket hari ini sebagai selesai?')) {
-        fetch('/petugas/jadwal/tandai-selesai', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                kelompok_id: {{ $kelompok->id }},
-                tanggal: '{{ now()->format("Y-m-d") }}',
-                catatan: 'Tugas piket telah diselesaikan'
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menandai tugas selesai');
-        });
-    }
-}
-</script>
-@endif
 @endsection

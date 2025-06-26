@@ -41,24 +41,6 @@
 
         <!-- Calendar Container -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <!-- Calendar Header Info -->
-            <div class="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-4 border-b border-slate-200">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center space-x-2 text-sm text-slate-600">
-                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-                            <span>Jadwal Aktif</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-sm text-slate-600">
-                            <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
-                            <span>Jadwal Mendatang</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-sm text-slate-600">
-                            <div class="w-3 h-3 bg-slate-400 rounded-full"></div>
-                            <span>Jadwal Selesai</span>
-                        </div>
-                    </div>
-
                     <!-- Quick Stats -->
                     <div class="hidden md:flex items-center space-x-6 text-sm">
                         <div class="text-center">

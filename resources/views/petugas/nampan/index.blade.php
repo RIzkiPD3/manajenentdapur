@@ -33,7 +33,7 @@
         @endif
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-1 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
                 <div class="flex items-center">
                     <div class="p-3 bg-slate-600 rounded-lg">
@@ -44,20 +44,6 @@
                     <div class="ml-4">
                         <p class="text-sm font-medium text-slate-600">Total Request</p>
                         <p class="text-3xl font-bold text-slate-900">{{ $requests->count() }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                <div class="flex items-center">
-                    <div class="p-3 bg-orange-500 rounded-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-slate-600">Belum Diproses</p>
-                        <p class="text-3xl font-bold text-slate-900">{{ $requests->where('status', 'pending')->count() }}</p>
                     </div>
                 </div>
             </div>

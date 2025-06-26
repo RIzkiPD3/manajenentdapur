@@ -20,8 +20,6 @@ class Angkatan extends Authenticatable
         'nama_angkatan',
         'email',
         'password',
-        'tahun_angkatan',
-        'status_aktif'
     ];
 
     /**

@@ -141,11 +141,20 @@
                         <div>
                             <h4 class="text-sm font-semibold text-blue-800 mb-1">Persyaratan Password:</h4>
                             <ul class="text-sm text-blue-700 space-y-1">
-                                <li>• Minimal 8 karakter</li>
-                                <li>• Kombinasi huruf besar dan kecil</li>
-                                <li>• Mengandung angka dan simbol</li>
+                                <li>• Minimal 6 karakter</li>
+                                <li>• Password dan konfirmasi password harus sama</li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Info Status -->
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-check-circle text-green-500 mr-2"></i>
+                        <p class="text-sm text-green-700">
+                            <strong>Akun akan otomatis aktif</strong> setelah dibuat
+                        </p>
                     </div>
                 </div>
             </div>
@@ -219,6 +228,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (firstEmptyField) {
         firstEmptyField.focus();
     }
+
+    // Debug form submission
+    form.addEventListener('submit', function(e) {
+        console.log('Form submitted with data:', new FormData(form));
+    });
 });
 </script>
 @endsection

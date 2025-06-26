@@ -14,6 +14,7 @@ use App\Models\Menu;
 use App\Models\KelompokPiket;
 use App\Models\JadwalPiket;
 use Carbon\Carbon;
+use Illuminate\Validation\Rules\Password;
 
 class AngkatanController extends Controller
 {
@@ -109,135 +110,40 @@ class AngkatanController extends Controller
         // Validasi input
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'status_aktif' => 'nullable'
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Password::min(6)],
+        ], [
+            'nama.required' => 'Nama lengkap wajib diisi',
+            'nama.string' => 'Nama harus berupa teks',
+            'nama.max' => 'Nama maksimal 255 karakter',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah terdaftar',
+            'password.required' => 'Password wajib diisi',
+            'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'password.min' => 'Password minimal 6 karakter',
         ]);
 
         try {
-            // Simpan ke database
-            User::create([
+            // Buat user baru dengan role angkatan
+            $user = User::create([
                 'name' => $validated['nama'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
-                'role' => 'angkatan',
-                'status_aktif' => $request->has('status_aktif') ? 1 : 0,
+                'role' => 'angkatan', // Set role sebagai angkatan
             ]);
 
-            // Redirect ke dashboard admin
-            return redirect()->route('admin.dashboard')->with('success', 'Akun angkatan berhasil ditambahkan.');
+            // Redirect ke dashboard admin dengan pesan sukses
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Akun angkatan berhasil dibuat untuk ' . $user->name);
+
         } catch (\Exception $e) {
             Log::error('Error creating angkatan account: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Gagal menambahkan akun angkatan.'])->withInput();
-        }
-    }
 
-    public function show(string $id)
-    {
-        $angkatan = User::where('role', 'angkatan')->findOrFail($id);
-        return view('admin.angkatan.show', compact('angkatan'));
-    }
-
-    public function edit(string $id)
-    {
-        $angkatan = User::where('role', 'angkatan')->findOrFail($id);
-        return view('admin.angkatan.edit', compact('angkatan'));
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $angkatan = User::where('role', 'angkatan')->findOrFail($id);
-
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $angkatan->id,
-            'password' => 'nullable|string|min:6|confirmed',
-            'status_aktif' => 'nullable|boolean'
-        ]);
-
-        try {
-            $angkatan->name = $request->nama;
-            $angkatan->email = $request->email;
-            $angkatan->status_aktif = $request->has('status_aktif') ? 1 : 0;
-
-            if ($request->filled('password')) {
-                $angkatan->password = Hash::make($request->password);
-            }
-
-            $angkatan->save();
-
-            return redirect()->route('admin.angkatan.index')->with('success', 'Akun angkatan berhasil diperbarui.');
-        } catch (\Exception $e) {
-            Log::error('Error updating angkatan account: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Gagal memperbarui akun angkatan.']);
-        }
-    }
-
-    public function destroy(string $id)
-    {
-        try {
-            $angkatan = User::where('role', 'angkatan')->findOrFail($id);
-            $angkatan->delete();
-
-            return redirect()->route('admin.angkatan.index')->with('success', 'Akun angkatan berhasil dihapus.');
-        } catch (\Exception $e) {
-            Log::error('Error deleting angkatan account: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Gagal menghapus akun angkatan.']);
-        }
-    }
-
-    // ======== LOGIN LOGIKA UNTUK ANGKATAN ========
-
-    public function showLoginForm()
-    {
-        return view('angkatan.login');
-    }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        try {
-            $user = User::where('email', $request->email)->where('role', 'angkatan')->first();
-
-            if (!$user) {
-                return back()->withErrors(['email' => 'Akun tidak ditemukan.'])->withInput();
-            }
-
-            if (!$user->status_aktif) {
-                return back()->withErrors(['email' => 'Akun angkatan tidak aktif.'])->withInput();
-            }
-
-            if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();
-                Log::info('Angkatan login successful: ' . $user->email);
-                return redirect()->route('angkatan.dashboard')->with('success', 'Login berhasil!');
-            }
-
-            return back()->withErrors([
-                'email' => 'Email atau password salah.',
-            ])->withInput();
-
-        } catch (\Exception $e) {
-            Log::error('Login error: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Terjadi kesalahan saat login.'])->withInput();
-        }
-    }
-
-    public function logout(Request $request)
-    {
-        try {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()->route('angkatan.login')->with('success', 'Logout berhasil.');
-        } catch (\Exception $e) {
-            Log::error('Logout error: ' . $e->getMessage());
-            return redirect()->route('angkatan.login');
+            // Jika terjadi error, kembalikan ke form dengan pesan error
+            return back()
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->with('error', 'Gagal membuat akun angkatan. Silakan coba lagi.');
         }
     }
 }

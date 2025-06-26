@@ -32,10 +32,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Pendaftaran Akun Angkatan (oleh Admin / terbuka)
-Route::get('/register', [AngkatanController::class, 'create'])->name('register');
-Route::post('/register', [AngkatanController::class, 'store'])->name('register.store');
-
 // Setelah login, redirect ke dashboard sesuai role
 Route::middleware(['auth', RoleRedirect::class])
     ->get('/dashboard', function() {
@@ -61,10 +57,12 @@ Route::middleware(['auth', AdminMiddleware::class])
         // Resource route SETELAH route khusus
         Route::resource('menus', MenuController::class);
 
+        // ✅ PERBAIKAN: Angkatan Routes - Pastikan semua route terdaftar dengan benar
+        Route::resource('angkatan', AngkatanController::class);
+
         // Manajemen Data Lainnya
         Route::resource('kelompok', KelompokPiketController::class)->except(['show']);
         Route::resource('sesi-absensi', SesiAbsensiController::class)->except(['show']);
-        Route::resource('angkatan', AngkatanController::class)->except(['show']);
 
         // Jadwal Piket Routes - dengan urutan yang benar
         Route::get('/jadwal/generate', [JadwalPiketController::class, 'generateForm'])->name('jadwal.generate');
@@ -111,7 +109,7 @@ Route::middleware(['auth', PetugasMiddleware::class])
         Route::delete('/request-nampan/{id}', [RequestNampanController::class, 'destroy'])->name('request-nampan.destroy');
     });
 
-    // ============================
+// ============================
 // 🎓 ANGKATAN ROUTES - SOLUSI LENGKAP
 // ============================
 Route::middleware(['auth', AngkatanMiddleware::class])
@@ -130,6 +128,7 @@ Route::middleware(['auth', AngkatanMiddleware::class])
         // ✅ BACKWARD COMPATIBILITY: Route lama untuk menghindari breaking changes
         Route::get('/request-nampan-create', [RequestNampanController::class, 'create'])->name('request-nampan-create');
     });
+
 // ============================
 // ✅ TAMBAHAN: API Routes (Optional)
 // ============================
